@@ -38,10 +38,19 @@ Toda tabla del hogar lleva:
 
 ```sql
 created_at  timestamptz NOT NULL DEFAULT now(),
-created_by  uuid        NOT NULL REFERENCES auth.users(id),
+created_by  uuid        NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id),
 updated_at  timestamptz NOT NULL DEFAULT now(),
-updated_by  uuid        NOT NULL REFERENCES auth.users(id)
+updated_by  uuid        NOT NULL DEFAULT auth.uid() REFERENCES auth.users(id)
 ```
+
+El `DEFAULT auth.uid()` se añadió al aplicar el esquema (20 de agosto de 2026) para que el cliente no
+tenga que mandar las columnas de auditoría. **No basta por sí solo**: un DEFAULT se puede
+sobreescribir mandando un valor, así que el trigger del apartado siguiente es el que las impone.
+
+⚠️ **Consecuencia práctica:** `auth.uid()` devuelve `NULL` en una consulta de administrador, así que
+un `INSERT` con SQL crudo desde la consola choca contra el `NOT NULL` mientras no haya usuario. Es lo
+que condiciona la tarea 024: el hogar inicial se crea después del primer login, o con un `created_by`
+explícito.
 
 `created_at` absorbe lo que antes eran campos propios como `joined_at`. No se duplica.
 

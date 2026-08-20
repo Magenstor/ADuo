@@ -33,19 +33,18 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 
 ## Lista
 
-
 ### Backend · InsForge
 
 | # | Tarea | Estado |
 |---|---|---|
 | 001 | [Google OAuth ya viene configurado](001-oauth-google-preconfigurado.md) | ✅ |
 | 002 | [Confirmar la tabla de usuarios](002-confirmar-auth-users.md) | ✅ |
-| 003 | [Obtener `baseUrl` y anon key](003-obtener-claves.md) | ☐ |
-| 004 | [Crear la tabla `households`](004-tabla-households.md) | ☐ |
-| 005 | [Crear la tabla `household_members`](005-tabla-household-members.md) | ☐ |
-| 006 | [Crear la tabla `shopping_lists`](006-tabla-shopping-lists.md) | ☐ |
-| 007 | [Crear la tabla `shopping_items`](007-tabla-shopping-items.md) | ☐ |
-| 008 | [Verificar el esquema aplicado](008-verificar-esquema.md) | ☐ |
+| 003 | [Obtener `baseUrl` y anon key](003-obtener-claves.md) | ✅ |
+| 004 | [Crear la tabla `households`](004-tabla-households.md) | ✅ |
+| 005 | [Crear la tabla `household_members`](005-tabla-household-members.md) | ✅ |
+| 006 | [Crear la tabla `shopping_lists`](006-tabla-shopping-lists.md) | ✅ |
+| 007 | [Crear la tabla `shopping_items`](007-tabla-shopping-items.md) | ✅ |
+| 008 | [Verificar el esquema aplicado](008-verificar-esquema.md) | ✅ |
 | 009 | [Auditoría en la fila: `set_auditoria()` y sus triggers](009-auditoria-en-fila.md) | ☐ |
 | 010 | [Crear la tabla `audit_log`](010-tabla-audit-log.md) | ☐ |
 | 011 | [`registrar_auditoria()` y sus triggers](011-trigger-auditoria.md) | ☐ |
@@ -78,7 +77,7 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 
 | # | Tarea | Estado |
 |---|---|---|
-| 026 | [Crear el proyecto con Vite](026-proyecto-vite.md) | ☐ |
+| 026 | [Crear el proyecto con Vite](026-proyecto-vite.md) | ✅ |
 | 027 | [`.gitignore` y variables de entorno](027-gitignore-env.md) | ☐ |
 | 028 | [Alias `@/` hacia `src/`](028-alias-import.md) | ☐ |
 | 029 | [Tailwind CSS 3.4](029-tailwind.md) | ☐ |
