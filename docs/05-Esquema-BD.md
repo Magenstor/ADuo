@@ -130,7 +130,7 @@ apuntes, cada uno con su contenido.
 >
 > ✅ **`auth.uid()` existe en InsForge** (confirmado el 20 de agosto de 2026 en sus ejemplos de RLS).
 >
-> ⚠️ **Sigue pendiente de la tarea A1.5:** el nombre exacto de la tabla de usuarios a la que apuntan
+> ⚠️ **Sigue pendiente de la tarea [002](tareas/002-confirmar-auth-users.md):** el nombre exacto de la tabla de usuarios a la que apuntan
 > las FK. El esquema asume `auth.users`. Es un ajuste de nombres al aplicar el DDL, no un riesgo de
 > diseño. El acceso por OAuth **no cambia nada aquí**: la identidad sigue siendo la del usuario de auth.
 
@@ -297,7 +297,8 @@ el apartado 7.3 de `00-Vision-y-Modulos.md`.
 - **Cómo se invita a un miembro.** Diferido al terminar el MVP: por ahora la fila de
   `household_members` se inserta a mano. Ver apartado 4.1.
 - **Nombre real de la función de usuario autenticado** en InsForge y su esquema de usuarios. Se
-  resuelve al aplicar el DDL (tarea 1.1). Ya no bloquea nada: los triggers y `SECURITY DEFINER`
+  resuelve al aplicar el DDL (tarea [008](tareas/008-verificar-esquema.md)). Ya no bloquea nada:
+  los triggers y `SECURITY DEFINER`
   están confirmados.
 - **Retención de `audit_log`.** Crece para siempre. A esta escala es irrelevante —500 MB para texto
   de dos o tres personas—, pero conviene decidir si algún día se poda.

@@ -187,5 +187,5 @@ autenticación y el hogar. Se tratan en `01-Modulo-1-Lista-Compra.md`.
 | `01-Modulo-1-Lista-Compra.md` | Definición funcional del MVP. |
 | `02-Decisiones-tecnicas-stack.md` | Stack, librerías y decisiones técnicas transversales. |
 | `03-Arquitectura.md` | Estructura de carpetas, capas, reglas de importación y tests. |
-| `04-Plan-de-trabajo.md` | Tareas del módulo 1 por prioridad, con lo bloqueante y los riesgos. |
+| `tareas/000-indice.md` | Índice de las 62 tareas del módulo 1, en orden de ejecución. |
 | `05-Esquema-BD.md` | Esquema SQL, convención de auditoría y seguridad de fila. |

@@ -225,8 +225,7 @@ proveedor. La base es PostgreSQL estándar, así que los datos son exportables.
 
 > **Validado el 20 de agosto de 2026:** InsForge permite triggers y funciones `SECURITY DEFINER`,
 > la regla de seguridad de fila del hogar se puede expresar, y el realtime se expone por WebSocket.
-> Los tres riesgos que bloqueaban este apartado están cerrados. Ver el bloque 1 de
-> `04-Plan-de-trabajo.md`.
+> Los tres riesgos que bloqueaban este apartado están cerrados. Ver `tareas/000-indice.md`.
 
 ### 3.2 Seguridad
 
@@ -285,7 +284,7 @@ Nuestras claves ajenas apuntan a algo estable.
 - ⚠️ **`allowedRedirectUrls` vacío permite CUALQUIER redirección**, y así viene el proyecto de
   fábrica. Es una redirección abierta y hay que cerrarla antes de producción: con la lista vacía,
   cualquiera puede fabricar un enlace de login que mande el `insforge_code` a su propio servidor y
-  canjearlo por una sesión con la cuenta de la víctima. Tarea A1.2 del plan.
+  canjearlo por una sesión con la cuenta de la víctima. Tarea [060](tareas/060-cerrar-redirect-urls.md).
 - El **nombre visible y el avatar** llegan en `profile.name` y `profile.avatar_url`, así que
   `display_name` se rellena solo la primera vez. Sigue siendo editable por su dueño (RF-1.2).
 - **Cerrar sesión es local.** Salir de ADuo no cierra la sesión de Google en el dispositivo.
@@ -295,7 +294,7 @@ Nuestras claves ajenas apuntan a algo estable.
 ⚠️ **Riesgo abierto: el redirect de OAuth en la PWA instalada.** Una PWA en `display: standalone`
 puede abrir el redirect fuera del contexto de la aplicación, en el navegador del sistema, dejando la
 sesión donde no sirve. Hay que probarlo **en el móvil con la app instalada**, no en el navegador de
-escritorio, donde siempre funciona. Ver la tarea 3.3 de `04-Plan-de-trabajo.md`.
+escritorio, donde siempre funciona. Ver la tarea [061](tareas/061-probar-oauth-pwa.md).
 
 ## 4. Realtime — patrón de integración
 
