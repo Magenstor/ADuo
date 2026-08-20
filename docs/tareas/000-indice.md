@@ -63,7 +63,7 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | 019 | [Triggers de publicación en listas y artículos](019-triggers-publicacion.md) | ✅ |
 | 020 | [RLS de suscripción al canal](020-rls-suscripcion.md) | ✅ |
 | 021 | [Bloquear la publicación desde el cliente](021-bloquear-publish.md) | ✅ |
-| 022 | [Fijar la retención de `realtime.messages`](022-retencion-mensajes.md) | ⛔ |
+| 022 | [Fijar la retención de `realtime.messages`](022-retencion-mensajes.md) | ✅ |
 | 023 | [Capturar la forma exacta de los eventos](023-capturar-eventos.md) | ⛔ |
 
 ### Backend · Datos iniciales

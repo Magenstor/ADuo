@@ -71,12 +71,13 @@ CREATE POLICY hogar_suscribirse ON realtime.channels
 -- por la base de datos ni por RLS. Las escrituras van por PostgREST a la
 -- tabla, el trigger publica, el evento vuelve. En ese orden, siempre.
 
--- PENDIENTE (tarea 022): la retencion NO se puede fijar desde aqui.
+-- HECHO fuera de SQL (tarea 022): retention_days = 7.
+-- La retencion NO se puede fijar desde aqui.
 --   UPDATE realtime.config SET retention_days = 7;
 -- devuelve "permission denied for table config" incluso como administrador.
--- Hay que hacerlo desde el Dashboard (Realtime > Settings) o con
--- PATCH /api/realtime/config y un token de admin.
+-- Se aplico con PATCH /api/realtime/config y token de admin. OJO: el campo
+-- del cuerpo es "retentionDays" en camelCase, no "retention_days".
 --
 -- Importa: los payloads se PERSISTEN en realtime.messages, o sea que el texto
 -- de los articulos acaba duplicado ahi. Es una segunda copia de datos privados.
--- retention_days = NULL significa guardarlos PARA SIEMPRE, y ahora esta en NULL.
+-- retention_days = NULL significaria guardarlos PARA SIEMPRE.

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | ⛔ bloqueada |
+| **Estado** | ✅ hecha |
 | **Bloque** | Backend · Realtime |
 | **Depende de** | [021](021-bloquear-publish.md) |
 | **Bloquea a** | — |
@@ -13,8 +13,8 @@ Limitar cuánto tiempo vive la segunda copia de nuestros datos privados.
 
 ## Pasos
 
-- [ ] Fijar `retention_days` en `realtime.config` a un valor corto.
-- [ ] Comprobar que la limpieza diaria de pg_cron está activa.
+- [x] Fijar `retention_days` en `realtime.config` a un valor corto.
+- [x] Comprobar que la limpieza diaria de pg_cron está activa.
 
 ## Hecho cuando
 
@@ -28,10 +28,17 @@ solo los ven los miembros del hogar: eso tiene que valer también aquí.
 
 `NULL` significa guardar para siempre.
 
-## Por qué está bloqueada (20 de agosto de 2026)
+## Resultado (20 de agosto de 2026)
 
-**No se puede hacer desde SQL.** `UPDATE realtime.config SET retention_days = 7` devuelve `permission denied for table config` incluso como administrador.
+**`retention_days = 7`**, verificado leyendo `realtime.config` después de fijarlo.
 
-Hay que hacerlo desde el **Dashboard → Realtime → Settings**, o con `PATCH /api/realtime/config` y un token de admin.
+**No se puede hacer desde SQL:** `UPDATE realtime.config` devuelve `permission denied for table config` incluso como administrador. La vía es `PATCH /api/realtime/config` con un token de admin, y el campo del cuerpo se llama **`retentionDays`** en camelCase, no `retention_days`:
 
-⚠️ Ahora mismo `retention_days` está en **`NULL`, que significa guardar para siempre**. Y los payloads llevan el texto de los artículos.
+```bash
+curl --request PATCH --url "$URL/api/realtime/config" \
+  --header "Authorization: Bearer $ADMIN_KEY" \
+  --header 'Content-Type: application/json' \
+  --data '{"retentionDays": 7}'
+```
+
+Antes estaba en `NULL`, que significa **guardar para siempre** — y los payloads llevan el texto de los artículos.
