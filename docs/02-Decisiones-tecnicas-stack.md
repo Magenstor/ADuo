@@ -264,12 +264,26 @@ cuando ya se ofrecen otros logins sociales **no aplica aquí**, porque una PWA i
 navegador no pasa por App Review. Si algún día se empaqueta para la App Store, entonces sí habría
 que añadirlo.
 
+**Google ya viene configurado de fábrica** (verificado el 20 de agosto de 2026). La tabla
+`auth.oauth_configs` trae la fila de `google` con `use_shared_key: true`, sin cliente propio, y con
+los scopes `openid`, `email` y `profile`. **No hay que dar de alta nada en Google Cloud Console para
+empezar a entrar.**
+
+InsForge fija `client_id`, `redirect_uri`, `scope`, `state` y `code_challenge` **en el servidor** e
+ignora los que mande el cliente. Por eso la clave compartida funciona: ante Google, quien pide el
+consentimiento es InsForge. El precio es que **la pantalla de consentimiento mostrará el nombre de
+InsForge, no "ADuo"** — irrelevante para un hogar de dos, inaceptable para cualquier cosa pública.
+
+Migrar a un cliente propio más adelante **no rompe datos**: `auth.users.id` es un uuid de InsForge,
+no el identificador de Google, y el enlace con el proveedor vive aparte en `auth.user_providers`.
+Nuestras claves ajenas apuntan a algo estable.
+
 **Consecuencias técnicas de obligado cumplimiento:**
 
-- Hay que registrar los **URI de redirección** de OAuth para los dos orígenes: el de desarrollo local
-  y el de producción. Son distintos y ambos tienen que estar dados de alta.
-- El **nombre visible y el avatar** los aporta el proveedor, así que `display_name` se rellena solo
-  la primera vez. Sigue siendo editable por su dueño (RF-1.2).
+- `signInWithOAuth` exige un **`redirectTo`**, y el SDK detecta solo el `insforge_code` de vuelta,
+  canjea la sesión y la guarda. El refresco va en una cookie `httpOnly`.
+- El **nombre visible y el avatar** llegan en `profile.name` y `profile.avatar_url`, así que
+  `display_name` se rellena solo la primera vez. Sigue siendo editable por su dueño (RF-1.2).
 - **Cerrar sesión es local.** Salir de ADuo no cierra la sesión de Google en el dispositivo.
 - El esquema **no cambia**: `auth.uid()` sigue siendo la identidad y `household_members.user_id`
   sigue apuntando al usuario del proveedor de auth.

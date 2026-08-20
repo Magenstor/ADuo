@@ -31,7 +31,8 @@ Comprobado el 20 de agosto de 2026 con el MCP de InsForge contra el proyecto rea
 | URL del proyecto | `https://rn8y8xbv.eu-central.insforge.app` | Es el `baseUrl` del cliente. |
 | Proveedores OAuth | `google`, `github` disponibles | RF-1.1 es implementable. |
 | SMTP | **Deshabilitado** | Confirma que no hay correo de recuperación. La decisión de delegar en Google era la correcta. |
-| `allowedRedirectUrls` | **Vacío** | ⚠️ El login OAuth **fallará** hasta que se rellene. Tarea A1.2. |
+| OAuth de Google | **Ya configurado**, con `use_shared_key: true` y scopes `openid, email, profile` | No hace falta cliente propio de Google Cloud. Se puede entrar hoy. |
+| `allowedRedirectUrls` | **Vacío** | La documentación solo lo exige para los enlaces de correo, no para OAuth. Sin verificar. Tarea A1.2. |
 | `requireEmailVerification` | `true`, con SMTP apagado | ⚠️ Hay que confirmar que no bloquea el alta por OAuth. Tarea A1.3. |
 | Tablas | **Ninguna** | El esquema está por aplicar entero. |
 | Triggers y `SECURITY DEFINER` | Permitidos | La auditoría se implementa como está diseñada. |
@@ -45,21 +46,36 @@ Comprobado el 20 de agosto de 2026 con el MCP de InsForge contra el proyecto rea
 
 ## A1 — Acceso y autenticación
 
-- [ ] **A1.1** 🔴👤 Crear el cliente OAuth de **Google** en Google Cloud Console: pantalla de
-      consentimiento y client ID + secret. Es tu cuenta, no lo puedo hacer yo.
-- [ ] **A1.2** 🔴👤 Configurar el proveedor Google en InsForge con ese client ID, y **rellenar
-      `allowedRedirectUrls`** con los dos orígenes: el de desarrollo local y el de producción. Ahora
-      mismo la lista está vacía y **cualquier intento de login será rechazado**.
-- [ ] **A1.3** 🔴 Comprobar que `requireEmailVerification: true` **no bloquea el alta por OAuth**.
-      Google entrega el email ya verificado, así que no debería, pero con el SMTP apagado un usuario
-      atrapado en "sin verificar" no tendría forma de salir. Si bloquea, se desactiva el flag.
+- [x] **A1.1** 🔴 **Google ya viene configurado de fábrica.** `auth.oauth_configs` tiene la fila de
+      `google` con `use_shared_key: true`, sin `client_id` propio, y con los scopes `openid`, `email`
+      y `profile` — justo los que hacen falta para el nombre y el avatar. **No hay que crear nada en
+      Google Cloud Console para empezar.**
+
+      InsForge fija `client_id`, `redirect_uri`, `scope`, `state` y `code_challenge` **en el
+      servidor** e ignora los que mande el cliente. Por eso la clave compartida funciona: ante Google,
+      quien pide el consentimiento es InsForge, no nosotros.
+
+      ⚠️ **El precio:** la pantalla de consentimiento de Google mostrará el nombre de la aplicación de
+      InsForge, no "ADuo". Para dos personas que viven juntas da igual. Para cualquier cosa pública
+      no daría igual.
+- [ ] **A1.2** 🟡 Comprobar si `redirectTo` de `signInWithOAuth` se valida contra
+      `allowedRedirectUrls`. La documentación **solo** exige esa lista para los enlaces de
+      verificación de email y de reseteo de contraseña, que no usamos. Se sabrá en el primer login
+      real: si lo rechaza, se añaden los dos orígenes y listo.
+- [ ] **A1.3** 🟡 Comprobar que `requireEmailVerification: true` **no bloquea el alta por OAuth**.
+      Google entrega el email ya verificado, así que no debería. Si bloquea, se desactiva el flag —
+      con el SMTP apagado, un usuario atrapado en "sin verificar" no tendría forma de salir.
 - [ ] **A1.4** 🔴 Obtener la **anon key** y dejar anotados `baseUrl` y `anonKey` para el frontend.
       ⚠️ La anon key va en una variable `VITE_` y **acaba en el bundle público**: eso es correcto
       porque quien protege los datos es RLS. Una clave de servicio ahí **jamás**.
 - [x] **A1.5** 🟡 **`auth.users(id uuid)` existe** (verificado el 20 de agosto de 2026). Las FK del
       esquema funcionan tal y como están escritas. La tabla trae además `email`, `email_verified` y
-      un `profile jsonb` — de ahí debería salir el nombre y el avatar que da Google, pendiente de
-      confirmar con el primer login real (tarea B2.4).
+      un `profile jsonb` con `name` y `avatar_url`, que es de donde sale el nombre prerrellenado.
+
+      **Nota de migración:** `auth.users.id` es un uuid propio de InsForge, no el identificador de
+      Google; el enlace con el proveedor vive aparte, en `auth.user_providers`. Así que **nuestras FK
+      apuntan a algo estable**: cambiar algún día a un cliente propio de Google no toca
+      `household_members.user_id`.
 
 ## A2 — Tablas
 
