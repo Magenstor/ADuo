@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | ✅ hecha |
 | **Bloque** | Backend · InsForge |
 | **Depende de** | — |
 | **Bloquea a** | 033 |
@@ -13,12 +13,23 @@ Dejar anotadas las dos credenciales que necesita el frontend.
 
 ## Pasos
 
-- [ ] Obtener la anon key con `get-anon-key` o `npx @insforge/cli secrets get ANON_KEY`.
-- [ ] Anotar `baseUrl`: `https://rn8y8xbv.eu-central.insforge.app`.
+- [x] Obtener la anon key con `get-anon-key` o `npx @insforge/cli secrets get ANON_KEY`.
+- [x] Anotar `baseUrl`: `https://rn8y8xbv.eu-central.insforge.app`.
 
 ## Hecho cuando
 
-- Las dos están anotadas y listas para el `.env` de la tarea 027.
+- Las dos están en `frontend/.env`, que `frontend/.gitignore` ya ignoraba en su línea 6.
+- `frontend/.env.example` queda versionado, sin valores.
+
+## Resultado
+
+| Variable | Valor |
+|---|---|
+| `VITE_INSFORGE_URL` | `https://rn8y8xbv.eu-central.insforge.app` |
+| `VITE_INSFORGE_ANON_KEY` | `anon_65726966…` (en `frontend/.env`) |
+
+**Nota:** la herramienta `get-anon-key` del MCP avisa de que su ruta está **obsoleta**. La vigente es
+`GET /api/metadata/anon-key`. Si algún día hay que regenerarla, usar esa.
 
 ## Ojo con esto
 

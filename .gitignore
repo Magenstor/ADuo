@@ -13,3 +13,12 @@
 .roo
 .trae
 .windsurf
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
+
+# Dependencias y build
+node_modules
+dist
