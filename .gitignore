@@ -22,3 +22,6 @@
 # Dependencias y build
 node_modules
 dist
+
+# Credenciales de herramientas (contiene la API key de administrador)
+.mcp.json
