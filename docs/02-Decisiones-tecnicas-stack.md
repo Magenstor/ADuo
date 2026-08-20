@@ -47,7 +47,7 @@ regla práctica es simple: **1.0 o superior entra; 0.x se justifica una por una.
 | Componentes de interfaz | **shadcn/ui** | Maduro |
 | Gráficos (módulo 2) | `recharts` | Maduro. **No** TanStack Charts, ver abajo |
 | Fechas | `date-fns` | Maduro |
-| Estilos | Tailwind CSS, mobile-first | Maduro |
+| Estilos | Tailwind CSS **3.4**, mobile-first | Maduro |
 
 Descartados del ecosistema TanStack: **Virtual** (listas pequeñas), **Store** (DB ya cubre el
 estado) y **Start** (SSR innecesario para una PWA estática; TanStack DB además no soporta SSR, las
@@ -182,6 +182,12 @@ más temprana de todas. A diferencia de TanStack Charts, la documentación de DB
 su uso en producción**; la cautela aquí es el pre-1.0 del binding de React, no un aviso explícito
 del proyecto.
 
+### 2.5b Tailwind se fija en 3.4, no en 4.x
+
+La documentación de InsForge lo marca como requisito explícito: **usar Tailwind CSS 3.4 y no subir a
+la 4**, con la dependencia fijada en `package.json`. No es una preferencia nuestra, es una
+restricción del proveedor sobre el que vamos a desplegar, así que se acata y se ancla la versión.
+
 ### 2.6 shadcn/ui
 
 Elegido por comodidad y por ser el estándar de facto actual. Dos consecuencias que hay que tener
@@ -278,53 +284,73 @@ escritorio, donde siempre funciona. Ver la tarea 3.3 de `04-Plan-de-trabajo.md`.
 La decisión de qué librería sostiene el tiempo real está en el apartado 2.5. Aquí va el patrón
 concreto. Todo esto vive en la capa `infrastructure/` del módulo correspondiente y en ninguna otra.
 
-### 4.1 Cómo se reparten el trabajo las dos capas
+### 4.1 Cómo funciona el realtime de InsForge (verificado el 20 de agosto de 2026)
 
-**InsForge expone el realtime por WebSocket** (confirmado el 20 de agosto de 2026). No existe
-adaptador oficial para TanStack DB, así que la costura la escribimos nosotros. Y hay que ser preciso
-en quién hace qué, porque es fácil describirlo mal:
+**No es streaming automático de cambios de tabla.** Esto es lo primero que hay que entender, porque
+la intuición traída de Supabase es justo la equivocada: en InsForge **no existe** un
+"suscríbete a los cambios de `shopping_items`". El realtime es **pub/sub sobre canales con nombre**.
 
-**El WebSocket no se conecta "a través de" TanStack Query.** TanStack Query no tiene transporte de
-WebSocket, ni lo pretende. El reparto real es:
+El mecanismo real, según la documentación oficial:
+
+1. Se declaran **patrones de canal** en `realtime.channels`. Los patrones usan `LIKE` de SQL, con `:`
+   como separador y `%` como comodín: `household:%` resuelve a `household:<uuid>`.
+2. **Un trigger en la tabla** llama a `realtime.publish(canal, evento, payload)`. Es decir: los
+   eventos de base de datos **los publicamos nosotros**, eligiendo canal, nombre de evento y
+   contenido.
+3. Postgres emite `pg_notify`, el backend carga el mensaje y lo entrega por Socket.IO a los
+   suscriptores del canal.
+
+**Para ADuo esto encaja mejor de lo que parecía**, porque el canal reproduce exactamente la regla de
+seguridad que ya teníamos: **un canal por hogar**, `household:<uuid>`. El filtrado por hogar no hay
+que programarlo, es la dirección del canal.
+
+| Pieza | Cómo se resuelve en ADuo |
+|---|---|
+| Canal | Patrón `household:%`, resuelto como `household:<household_id>` |
+| Publicación | Trigger `SECURITY DEFINER` en `shopping_lists` y `shopping_items` |
+| Nombre de evento | `list.insert`, `list.update`, `list.delete`, y lo mismo para `item` |
+| Payload | La fila entera en `jsonb`, que es lo que necesita un direct write |
+| Quién puede escuchar | Política `SELECT` sobre `realtime.channels` con `realtime.channel_name()` |
+| Quién puede publicar | **Nadie desde el cliente.** Solo el trigger |
+
+**El cliente nunca publica.** Las escrituras van por PostgREST a la tabla, el trigger publica, y el
+evento vuelve a todos. Si el cliente pudiera publicar, podría inyectar en la colección del otro un
+cambio que nunca pasó por la base de datos ni por RLS.
+
+### 4.2 Reparto de capas en el frontend
+
+**El WebSocket no se conecta "a través de" TanStack Query.** Query no tiene transporte de WebSocket y
+no lo pretende. El reparto es:
 
 | Capa | De qué se encarga |
 |---|---|
 | TanStack Query | La **carga inicial** de cada colección (`queryFn`) y el refetch al recuperar foco o reconectar. Nada más. |
-| WebSocket de InsForge | Los **cambios posteriores**, escritos directamente en la colección. |
+| `insforge.realtime` | Los **cambios posteriores**, que llegan por Socket.IO y se aplican a mano. |
 | TanStack DB | Guarda el estado, resuelve las live queries de forma incremental y gestiona las mutaciones optimistas. |
 
-El patrón concreto:
+Cada evento se traduce a un **direct write** de TanStack DB —`collection.utils.writeInsert`,
+`writeUpdate`, `writeDelete`, agrupados en `writeBatch`—, que es el mecanismo que la librería
+documenta para fuentes externas en tiempo real.
 
-- Una **colección por tabla del hogar**, creada con `queryCollectionOptions`: recibe `queryKey`,
-  `queryFn` y `queryClient` —primitivas de TanStack Query— más `getKey` y los manejadores
-  `onInsert` / `onUpdate` / `onDelete` que persisten contra InsForge.
-- Suscripción por WebSocket a inserts, updates y deletes, **filtrada por `household_id`**.
-- Al recibir un evento del otro dispositivo se aplica con **direct writes**, que es exactamente el
-  mecanismo que TanStack DB documenta para fuentes externas en tiempo real:
-  `collection.utils.writeInsert`, `writeUpdate` y `writeDelete`, agrupados en `writeBatch` cuando
-  llega más de un cambio, para que la actualización sea atómica.
-- **Nunca se invalida la query al recibir un evento.** Invalidar dispara un refetch completo de la
-  tabla por cada cambio de una fila, que es justo lo que este montaje existe para evitar.
-- Las live queries que dependan de esos datos se actualizan de forma incremental. El buscador de
-  RF-1.6 es una de ellas.
-- Los cambios propios se ven al instante por las mutaciones optimistas de la colección, con rollback
-  si el servidor rechaza. **La desduplicación del eco la resuelve la librería**, no código propio.
-- Fallback si se cae la conexión realtime: refetch de la query collection al recuperar el foco. Un
-  WebSocket caído no reenvía lo que se perdió.
+**Nunca se invalida la query al recibir un evento.** Invalidar dispara un refetch completo de la
+tabla por cada fila que cambia, que es justo lo que este montaje existe para evitar.
 
-### 4.2 La trampa de los direct writes
+### 4.3 Dos trampas confirmadas
 
-⚠️ **Un direct write lo puede pisar la siguiente ejecución del `queryFn`.** Es comportamiento
-documentado de TanStack DB, no un fallo: el `queryFn` devuelve el estado completo del servidor y
-sobrescribe la colección, incluido lo que el WebSocket acababa de escribir.
+⚠️ **1. Un direct write lo pisa la siguiente ejecución del `queryFn`.** Comportamiento documentado de
+TanStack DB, no un fallo: el `queryFn` devuelve el estado completo del servidor y sobrescribe la
+colección, incluido lo que el WebSocket acababa de escribir.
 
-El síntoma en producción es de los que cuestan una tarde: **un artículo borrado reaparece solo**, o
-un tachado se destacha, sin patrón aparente, porque depende de cuándo toque refetch.
+El síntoma en producción es de los que cuestan una tarde: **un artículo borrado reaparece solo**, sin
+patrón, porque depende de cuándo toque refetch. Se evita con un `staleTime` alto. Si el WebSocket es
+la fuente de verdad de los cambios, el refetch periódico sobra: solo hace falta al recuperar foco o
+al reconectar, que es precisamente cuando sí queremos que pise lo local.
 
-Se evita con un **`staleTime` alto** en la colección. Si el WebSocket es la fuente de verdad de los
-cambios, el refetch periódico sobra: solo hace falta al recuperar foco o al reconectar, que es
-precisamente cuando sí queremos que pise lo local. Esto se decide al escribir la tarea 4.5 y se
-prueba explícitamente.
+⚠️ **2. `realtime.messages` guarda los payloads.** Los mensajes se persisten en una tabla, así que el
+texto de los artículos acaba duplicado ahí. Nuestro modelo de privacidad dice que los datos solo son
+visibles para los miembros del hogar, y esa tabla es una segunda copia con sus propias reglas. Dos
+medidas, las dos obligatorias: **RLS sobre `realtime.messages`** y **`retention_days` corto** en
+`realtime.config`.
 
 ## 5. Despliegue y entornos
 
