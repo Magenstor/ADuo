@@ -11,53 +11,40 @@
 
 Los estilos, mobile-first. **Y resolver un conflicto que ya existe en el repositorio.**
 
-## El conflicto
+## Decidido el 20 de agosto de 2026
 
-El andamiaje instaló **Tailwind 4.1.18** con `@tailwindcss/vite`. La documentación de InsForge dice
-literalmente que se use la **3.4** y que no se suba a la 4.
+**Tailwind 4.** Se queda la 4.1.18 que instaló el andamiaje. InsForge pide la 3.4, pero esa
+instrucción existe por **sus plantillas**, que asumen la sintaxis de la v3 — y nosotros no usamos sus
+plantillas. Tailwind no toca el backend: InsForge sirve ficheros estáticos. Razonamiento completo en
+el apartado 2.5b de `../02-Decisiones-tecnicas-stack.md`.
 
-**Pero conviene mirar de dónde sale esa instrucción.** Tailwind no toca el backend: InsForge sirve
-ficheros estáticos y le da igual con qué se generó el CSS. La instrucción existe por **sus
-plantillas y su generación de código**, que asumen la sintaxis y el `tailwind.config.js` de la v3 —
-la v4 se configura desde CSS con `@theme`. Nosotros no usamos sus plantillas: tenemos arquitectura
-propia en `03-Arquitectura.md`.
+**Los `latest` se quedan.** El lockfile está versionado y es quien fija de verdad lo que se instala.
+Resolución actual: `react-router` 1.170.31, `react-router-devtools` 1.167.1, `devtools-vite`
+1.168.34, `react-devtools` 0.10.11 y `eslint-config` 0.4.0.
 
-Decisión a tomar, con lo que cuesta cada una:
+Las dos que están por debajo de 1.0 **son herramientas de desarrollo y no llegan al bundle**, así que
+quedan justificadas frente a la política del apartado 2.2. El listón de madurez se puso para lo que
+ejecuta el usuario, no para lo que ejecuta quien programa.
 
-| Opción | A favor | En contra |
-|---|---|---|
-| **Quedarse en la 4** (ya instalada) | Es la versión actual y el andamiaje ya está montado con `@tailwindcss/vite` | Nos salimos de lo que InsForge recomienda; fricción si algún día usamos una plantilla suya |
-| **Bajar a la 3.4** | Sigue la recomendación al pie de la letra | Deshacer el andamiaje para obedecer una restricción que no nos aplica |
-
-## Lo otro que hay que arreglar aquí
-
-`package.json` tiene **cinco dependencias fijadas como `latest`**: `@tanstack/react-devtools`,
-`@tanstack/react-router`, `@tanstack/react-router-devtools`, `@tanstack/devtools-vite` y
-`@tanstack/eslint-config`.
-
-`latest` no es una versión, es "lo que haya el día que se instale". El lockfile lo tapa mientras
-exista, pero cualquier resolución nueva puede saltar de mayor sin avisar. Y contradice de frente la
-política del apartado 2.2 del stack —«1.0 o superior entra; 0.x se justifica una por una»—: **no se
-puede aplicar un criterio de versión a algo que no está fijado**.
+⚠️ **La condición que hace segura esta decisión:** `pnpm-lock.yaml` se versiona siempre y no se
+regenera a la ligera. Un `latest` sin lockfile sí sería una ruleta.
 
 ## Pasos
 
-- [ ] Decidir entre quedarse en la 4 o bajar a la 3.4.
-- [ ] Anclar la versión elegida en `package.json`, sin rango que permita saltar de mayor.
+- [x] Decidir la versión: **Tailwind 4**.
+- [x] Decidir qué hacer con los `latest`: **se quedan**, protegidos por el lockfile.
+- [x] Corregir el apartado 2.5b del stack, que decía lo contrario.
 - [ ] Configurar los estilos base, mobile-first.
-- [ ] Sustituir los cinco `latest` por versiones concretas.
 
 ## Hecho cuando
 
 - Las clases de Tailwind funcionan.
-- `package.json` no contiene ningún `latest`.
-- La versión de Tailwind está anclada y la decisión queda escrita en el stack.
+- La decisión de versión está escrita en el apartado 2.5b del stack, no solo aquí.
 
 ## Ojo con esto
 
-Sea cual sea la versión elegida, **anclarla de verdad**. Un `^3.4` no impide el salto el día que
-alguien reinstale, y un `latest` lo garantiza.
+Tailwind 4 se configura **desde CSS con `@theme`**, no con `tailwind.config.js`. Si buscás una
+receta de configuración y te encuentras un `tailwind.config.js`, es de la v3 y no aplica.
 
-Si se decide quedarse en la 4, hay que **corregir el apartado 2.5b de
-`../02-Decisiones-tecnicas-stack.md`**, que ahora mismo dice lo contrario. Una decisión revocada se
-reescribe, no se deja conviviendo con la nueva.
+Y para shadcn (tarea [030](030-shadcn.md)): asegurate de usar una versión de su CLI que soporte
+Tailwind 4, porque las recetas antiguas generan configuración de la v3.

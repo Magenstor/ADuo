@@ -47,7 +47,7 @@ regla práctica es simple: **1.0 o superior entra; 0.x se justifica una por una.
 | Componentes de interfaz | **shadcn/ui** | Maduro |
 | Gráficos (módulo 2) | `recharts` | Maduro. **No** TanStack Charts, ver abajo |
 | Fechas | `date-fns` | Maduro |
-| Estilos | Tailwind CSS **3.4**, mobile-first | Maduro |
+| Estilos | Tailwind CSS **4**, mobile-first | Maduro |
 
 Descartados del ecosistema TanStack: **Virtual** (listas pequeñas), **Store** (DB ya cubre el
 estado) y **Start** (SSR innecesario para una PWA estática; TanStack DB además no soporta SSR, las
@@ -182,11 +182,46 @@ más temprana de todas. A diferencia de TanStack Charts, la documentación de DB
 su uso en producción**; la cautela aquí es el pre-1.0 del binding de React, no un aviso explícito
 del proyecto.
 
-### 2.5b Tailwind se fija en 3.4, no en 4.x
+### 2.5b Tailwind 4, no 3.4
 
-La documentación de InsForge lo marca como requisito explícito: **usar Tailwind CSS 3.4 y no subir a
-la 4**, con la dependencia fijada en `package.json`. No es una preferencia nuestra, es una
-restricción del proveedor sobre el que vamos a desplegar, así que se acata y se ancla la versión.
+**Decisión del 20 de agosto de 2026.** Se usa **Tailwind CSS 4**, que es lo que el andamiaje instaló
+(4.1.18 con `@tailwindcss/vite`).
+
+La documentación de InsForge pide la 3.4 y desaconseja la 4. **No se sigue esa recomendación, y por
+una razón concreta:** Tailwind no toca el backend. InsForge sirve ficheros estáticos y le da
+exactamente igual con qué se generó el CSS. Esa instrucción existe por **sus plantillas y su
+generación de código**, que asumen la sintaxis y el `tailwind.config.js` de la v3 — la v4 se
+configura desde CSS con `@theme`.
+
+Nosotros no usamos sus plantillas: la estructura está definida en `03-Arquitectura.md`. Bajar a la
+3.4 sería deshacer el andamiaje para obedecer una restricción que no nos aplica.
+
+**Consecuencia si algún día se usa una plantilla de InsForge:** habrá fricción de sintaxis, y se
+resuelve entonces. No se paga hoy por un problema hipotético.
+
+### 2.5c Versiones: el lockfile es lo que manda
+
+Cinco dependencias de TanStack están declaradas como `latest` en `package.json`. **Se dejan así**
+(decisión del 20 de agosto de 2026), porque `pnpm-lock.yaml` está versionado y es él quien fija de
+verdad lo que se instala.
+
+Lo que hay resuelto ahora mismo:
+
+| Dependencia | Versión | Nota |
+|---|---|---|
+| `@tanstack/react-router` | 1.170.31 | Runtime. Muy por encima de 1.0. |
+| `@tanstack/react-router-devtools` | 1.167.1 | Solo desarrollo. |
+| `@tanstack/devtools-vite` | 1.168.34 | Solo desarrollo. |
+| `@tanstack/react-devtools` | 0.10.11 | Solo desarrollo. |
+| `@tanstack/eslint-config` | 0.4.0 | Solo desarrollo. |
+
+**Dos están por debajo de 1.0, y la política del apartado 2.2 pide justificarlas una por una.** La
+justificación es la misma para ambas y es sólida: **son herramientas de desarrollo y no llegan nunca
+al bundle**. El listón de madurez se puso para lo que ejecuta el usuario, no para lo que ejecuta
+quien programa. Si una de las dos rompe, rompe en local y se ve al momento.
+
+**Lo que hay que respetar para que esto siga siendo seguro:** el lockfile se versiona siempre y no se
+regenera a la ligera. Un `latest` sin lockfile sí sería una ruleta.
 
 ### 2.6 shadcn/ui
 
