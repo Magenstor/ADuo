@@ -147,6 +147,19 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 
 ---
 
+## ⚠️ Lo que todavía NO está probado
+
+Todo lo verificado hasta ahora corrió **como administrador, y el administrador se salta la seguridad
+de fila**. Las políticas de RLS están escritas, aplicadas y **sin estrenar**: no había ningún usuario
+con quien probarlas.
+
+Eso deja sin verificar precisamente la parte de la que depende toda la privacidad del producto. El
+procedimiento completo, con los comandos listos para copiar, está en
+[`../06-Pruebas-tras-el-primer-login.md`](../06-Pruebas-tras-el-primer-login.md), y cierra las tareas
+016, 023, 024 y 025.
+
+---
+
 ## Los riesgos vivos
 
 1. **[061](061-probar-oauth-pwa.md) — El redirect de OAuth en la PWA instalada.** El mayor del MVP,

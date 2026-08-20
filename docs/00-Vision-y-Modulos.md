@@ -189,3 +189,4 @@ autenticación y el hogar. Se tratan en `01-Modulo-1-Lista-Compra.md`.
 | `03-Arquitectura.md` | Estructura de carpetas, capas, reglas de importación y tests. |
 | `tareas/000-indice.md` | Índice de las 62 tareas del módulo 1, en orden de ejecución. |
 | `05-Esquema-BD.md` | Esquema SQL, convención de auditoría y seguridad de fila. |
+| `06-Pruebas-tras-el-primer-login.md` | Lo que no se pudo verificar sin usuarios, con los comandos listos. |

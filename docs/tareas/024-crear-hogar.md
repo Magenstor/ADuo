@@ -34,3 +34,5 @@ Descubierto al verificar el esquema en la tarea [008](008-verificar-esquema.md).
 ## Por qué está bloqueada (20 de agosto de 2026)
 
 **Necesita un usuario.** `created_by` es `NOT NULL` y `auth.uid()` es `NULL` en consulta de administrador. Se hace tras la tarea [036](036-login-google.md).
+
+**Procedimiento paso a paso, con los comandos listos:** [`../06-Pruebas-tras-el-primer-login.md`](../06-Pruebas-tras-el-primer-login.md).

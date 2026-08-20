@@ -36,3 +36,5 @@ Un script mínimo, sin arquitectura. Esto es un spike, no código de producción
 | `item.insert` / `item.update` / `item.delete` | `household:<uuid>` | La fila entera en `jsonb` |
 
 Falta ver qué añade el SDK en `meta` al recibirlo. Se hace junto con la tarea [044](044-realtime-direct-writes.md).
+
+**Procedimiento paso a paso, con los comandos listos:** [`../06-Pruebas-tras-el-primer-login.md`](../06-Pruebas-tras-el-primer-login.md).

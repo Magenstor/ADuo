@@ -34,3 +34,5 @@ probar**. La invitación es prescindible; tener dos miembros de verdad, no.
 ## Por qué está bloqueada (20 de agosto de 2026)
 
 **Necesita usuarios en `auth.users`.** Se hace tras la tarea [036](036-login-google.md).
+
+**Procedimiento paso a paso, con los comandos listos:** [`../06-Pruebas-tras-el-primer-login.md`](../06-Pruebas-tras-el-primer-login.md).

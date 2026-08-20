@@ -33,3 +33,5 @@ que devuelve todo se ve exactamente igual que una correcta.
 **Necesita dos usuarios reales.** No hay ninguno en `auth.users`: nadie ha entrado todavía. Se hace después de la tarea [036](036-login-google.md).
 
 Las políticas están escritas y verificadas estructuralmente (RLS activo en las cinco tablas, `audit_log` con solo `SELECT`), pero **probar el aislamiento con un solo usuario no demuestra nada**, y con cero, menos.
+
+**Procedimiento paso a paso, con los comandos listos:** [`../06-Pruebas-tras-el-primer-login.md`](../06-Pruebas-tras-el-primer-login.md).
