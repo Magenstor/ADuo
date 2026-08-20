@@ -1,7 +1,7 @@
 # Módulo 1 — Listas de la compra (MVP)
 
-**Versión:** 2.0
-**Fecha:** 17 de agosto de 2026
+**Versión:** 3.0
+**Fecha:** 20 de agosto de 2026
 **Documento padre:** `00-Vision-y-Modulos.md`
 
 ---
@@ -11,7 +11,7 @@
 Listas de la compra compartidas entre los miembros del hogar. Varias listas, con nombre.
 
 El módulo 1 entrega además toda la base transversal del producto, porque es el primero que la
-necesita: cuentas, hogar, invitación, sincronización en tiempo real, PWA instalable y despliegue.
+necesita: acceso, hogar, sincronización en tiempo real, PWA instalable y despliegue.
 Esa base es la mitad del trabajo real de este MVP.
 
 **Explícitamente fuera:** notas libres, categorías de producto, precios, cantidades con unidades,
@@ -21,25 +21,42 @@ artículos recurrentes, plantillas de lista e historial de compras. Todo eso es 
 
 ### RF-1.1 — Cuentas y acceso
 
-- Registro e inicio de sesión con email y contraseña.
-- **Recuperación de contraseña por email.** No es opcional: sin esto, olvidar la contraseña
-  significa perder el acceso al hogar.
+- **Acceso con una cuenta de Google**, delegado en InsForge. ADuo no gestiona contraseñas.
+- **Registro e inicio de sesión son la misma acción.** No hay dos pantallas: se entra con Google y,
+  si es la primera vez, la cuenta se crea sola.
 - Cierre de sesión.
 - La sesión persiste entre aperturas de la app: no se pide login cada vez.
 
-**Decisión — verificación de email: no se exige.** En una app privada de dos personas que se
-conocen, el email no se usa para reputación ni para nada público; su única función real es la
-recuperación de contraseña. Exigir verificación añade una pantalla, un estado intermedio de
-"cuenta sin verificar" y un modo de fallo (correo que no llega) a cambio de nada.
+**Decisión del 20 de agosto de 2026 — autenticación delegada, sin contraseñas propias.** El plan
+Free de InsForge no envía correo, así que una contraseña propia no se podría recuperar nunca: el día
+que alguien la olvidara perdería el acceso al hogar. En vez de incumplir el requisito, se elimina.
+
+Con esto **desaparecen del alcance** la recuperación de contraseña, la verificación de email —el
+proveedor ya lo entrega verificado— y la pantalla de registro. El razonamiento y las consecuencias
+técnicas están en el apartado 3.3 de `02-Decisiones-tecnicas-stack.md`.
+
+**Apple queda fuera del MVP:** exige el Apple Developer Program, de pago anual, y no aporta nada
+sobre Google para este hogar. Añadir un segundo proveedor es una tarea aislada el día que haga
+falta.
 
 ### RF-1.2 — Hogar
 
-- El primer usuario que se registra crea un hogar y obtiene un **código de invitación**.
-- El segundo usuario se une introduciendo ese código.
-- Cada miembro tiene un **nombre visible** dentro del hogar, editable por él mismo.
-- **Máximo dos miembros por hogar** en el MVP. El código se rechaza si el hogar ya está completo.
-- El código de invitación se puede **regenerar**, lo que invalida el anterior.
+- El primer usuario que entra crea un hogar.
+- Cada miembro tiene un **nombre visible** dentro del hogar, editable por él mismo. Se rellena la
+  primera vez con el nombre que entrega Google, para que nadie tenga que escribirlo al entrar.
+- **Sin límite de miembros.** No hay grupo "completo".
 - Un usuario pertenece **a un solo hogar**.
+
+**Decisión del 20 de agosto de 2026 — sin flujo de invitación en el MVP.** No hay código de
+invitación ni pantalla para unirse. Los miembros se dan de alta **insertando la fila de
+`household_members` a mano** desde la consola de InsForge. Para dos personas que viven juntas es una
+operación que se hace una vez, y construir un flujo completo —generar código, presentarlo,
+introducirlo, validarlo, regenerarlo— para ejecutarla una vez es trabajo que no compra nada.
+
+⚠️ **Pero el alta manual sigue siendo obligatoria antes de dar el MVP por bueno.** Los criterios 4
+a 8 son la sincronización en tiempo real entre dos personas, que es la apuesta técnica central de
+este módulo. Con un solo miembro en el hogar **no se pueden probar**. La invitación es prescindible;
+tener dos miembros de verdad, no.
 
 **Decisión — abandonar el hogar: fuera del MVP.** Es la operación con más consecuencias de todo
 el producto: al llegar el módulo 2 arrastra gastos, balances y deudas pendientes de alguien que ya
@@ -48,24 +65,24 @@ cuando exista el módulo 2.
 
 ### RF-1.3 — Listas
 
-- Cualquiera de los dos puede **crear** una lista dándole un nombre. El nombre es obligatorio.
-- Cualquiera puede **renombrar** cualquier lista del hogar.
-- Cualquiera puede **borrar** cualquier lista del hogar. Borrar una lista **borra sus artículos**,
-  así que la acción pide confirmación indicando cuántos artículos se van a perder.
-- Todas las listas del hogar son visibles para los dos miembros. No hay listas privadas.
+- Cualquier miembro puede **crear** una lista dándole un nombre. El nombre es obligatorio.
+- Cualquier miembro puede **renombrar** cualquier lista del hogar.
+- Cualquier miembro puede **borrar** cualquier lista del hogar. Borrar una lista **borra sus
+  artículos**, así que la acción pide confirmación indicando cuántos artículos se van a perder.
+- Todas las listas del hogar son visibles para todos sus miembros. No hay listas privadas.
 - Al crear el hogar se crea una **lista inicial llamada "La compra"**, para que la app no arranque
   vacía y se pueda usar sin configurar nada.
 - Se puede borrar la última lista. En ese caso la app muestra un estado vacío que invita a crear
   una. No se inventa una regla especial de "mínimo una lista".
 
-**Sin límite de listas** en el MVP. Dos personas no van a crear cuarenta, y poner un límite es
-código y un mensaje de error a cambio de protegerse de un problema que no existe.
+**Sin límite de listas** en el MVP. Nadie va a crear cuarenta, y poner un límite es código y un
+mensaje de error a cambio de protegerse de un problema que no existe.
 
 ### RF-1.4 — Artículos
 
 - **Añadir artículo** a una lista: un texto libre. Es el único campo obligatorio y el único campo.
-- **Marcar como comprado** y desmarcar. Cualquiera de los dos puede marcar cualquier artículo, lo
-  haya añadido él o el otro.
+- **Marcar como comprado** y desmarcar. Cualquier miembro puede marcar cualquier artículo, lo haya
+  añadido él u otro.
 - **Editar** el texto de un artículo.
 - **Eliminar** un artículo.
 - **Vaciar los comprados** de una lista: borra de golpe todos los artículos marcados de esa lista.
@@ -124,72 +141,39 @@ de este módulo:
 
 ## 4. Modelo de datos
 
-Solo lo que este módulo necesita. Los módulos 2 y 3 cuelgan después de `households`.
+El esquema completo, con la convención de auditoría, las restricciones y las políticas de seguridad,
+está en **`05-Esquema-BD.md`**. Aquí solo lo que hay que saber al leer los requisitos:
 
-```
-households
-  id             uuid pk
-  name           text
-  invite_code    text único
-  created_at     timestamptz
-
-household_members
-  household_id   fk → households
-  user_id        fk → usuarios de auth
-  display_name   text
-  joined_at      timestamptz
-  pk (household_id, user_id)
-  -- regla de negocio del MVP: máximo 2 filas por household_id
-
-shopping_lists
-  id             uuid pk
-  household_id   fk → households
-  name           text
-  created_by     fk → usuario
-  created_at     timestamptz
-  updated_at     timestamptz
-
-shopping_items
-  id             uuid pk
-  list_id        fk → shopping_lists   (on delete cascade)
-  household_id   fk → households       (desnormalizado, ver nota)
-  content        text
-  is_bought      boolean, por defecto false
-  bought_by      fk → usuario, nullable
-  bought_at      timestamptz, nullable
-  created_by     fk → usuario
-  created_at     timestamptz
-  updated_at     timestamptz
-```
-
-**Notas de diseño**
-
-- **`household_id` está desnormalizado en `shopping_items` a propósito.** El artículo ya pertenece
-  a un hogar a través de su lista, así que el dato es redundante. Se duplica porque la regla de
-  seguridad del producto es *"solo filas de mi hogar"*, y tenerla escrita igual en todas las tablas
-  —sin un join para averiguar el hogar en cada comprobación— la hace uniforme, más barata y mucho
-  más difícil de equivocar. Es una desnormalización deliberada al servicio de la seguridad, no un
-  descuido. Requiere una restricción que garantice que el hogar del artículo coincide con el hogar
-  de su lista.
-- **Borrar una lista arrastra sus artículos** (`on delete cascade`), coherente con RF-1.3.
-- **`is_bought` es la fuente única de verdad**, no se deriva de `bought_at`: un artículo puede
-  desmarcarse, y entonces `bought_at` se limpia. Interpretar un `bought_at` viejo como estado
-  actual sería un error silencioso.
+- Cuatro tablas del hogar: `households`, `household_members`, `shopping_lists` y `shopping_items`,
+  más `audit_log`.
+- **El borrado es físico.** Se borra la fila. No hay filtros de vivo/muerto en ninguna consulta.
+- **Toda tabla lleva auditoría en la propia fila** de creación y modificación, temporal y de usuario:
+  `created_at`/`created_by` y `updated_at`/`updated_by`, estos últimos escritos por trigger y no por
+  el cliente.
+- **La auditoría de borrado vive en `audit_log`**, no en la fila: una fila borrada no puede guardar
+  quién la borró. Un trigger registra cada INSERT, UPDATE y DELETE con su autor y el contenido
+  completo de la fila, así que `old_data` de un DELETE es el respaldo de lo borrado.
+- **Borrar una lista arrastra sus artículos** por `ON DELETE CASCADE`, y cada artículo queda
+  registrado individualmente en la auditoría.
 - **No hay campo de posición**, coherente con no ofrecer reordenado manual.
 
 ## 5. Criterios de aceptación del MVP
 
-1. Me registro, creo un hogar y obtengo un código. El hogar ya tiene una lista "La compra".
-2. Mi pareja se registra, introduce el código y entra al mismo hogar.
-3. Un tercero con ese código es rechazado porque el hogar ya está completo.
-4. Regenero el código y el anterior deja de funcionar.
-5. Creo una lista "Ferretería" y ella la ve aparecer sin recargar.
-6. Renombro "Ferretería" a "Bricolaje" y el cambio le llega.
-7. Añado "leche" a la compra desde el móvil y aparece en su pantalla sin que recargue.
-8. Ella marca "leche" como comprada y lo veo marcado al instante.
-9. Vacío los comprados y la lista queda solo con lo pendiente.
-10. Borro una lista con artículos, se me avisa de cuántos se pierden, y al confirmar desaparecen
-    lista y artículos en los dos dispositivos.
-11. Olvido mi contraseña, pido recuperación por email y recupero el acceso.
-12. Instalo la app en la pantalla de inicio del móvil y abre como aplicación.
-13. Un usuario de otro hogar no puede leer ni escribir nuestras listas ni nuestros artículos.
+1. Entro con Google por primera vez, se crea mi hogar y ya tiene una lista "La compra".
+2. Doy de alta a mi pareja en el hogar a mano, entra con su Google y ve el mismo hogar.
+3. Creo una lista "Ferretería" y ella la ve aparecer sin recargar.
+4. Renombro "Ferretería" a "Bricolaje" y el cambio le llega.
+5. Añado "leche" a la compra desde el móvil y aparece en su pantalla sin que recargue.
+6. Ella marca "leche" como comprada y lo veo marcado al instante.
+7. Busco `azucar` y encuentra `Azúcar`.
+8. Vacío los comprados y la lista queda solo con lo pendiente.
+9. Borro una lista con artículos, se me avisa de cuántos se pierden, y al confirmar desaparecen
+    lista y artículos **en todos los dispositivos**.
+10. Entro con mi cuenta de Google desde un dispositivo nuevo y recupero mi hogar sin escribir
+    ninguna contraseña, porque en ADuo no existe ninguna.
+11. Instalo la app en la pantalla de inicio del móvil y abre como aplicación.
+12. Un usuario de otro hogar no puede leer ni escribir nuestras listas ni nuestros artículos, ni su
+    auditoría.
+13. Tras esa serie de altas, ediciones y borrados, `audit_log` permite responder **quién** hizo cada
+    cosa, **cuándo**, y **qué contenía** cada fila borrada.
+14. Ningún usuario puede escribir, modificar ni borrar filas de `audit_log`, ni siquiera las propias.

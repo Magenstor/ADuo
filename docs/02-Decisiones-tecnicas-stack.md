@@ -1,7 +1,7 @@
 # Decisiones técnicas y stack
 
-**Versión:** 2.0
-**Fecha:** 17 de agosto de 2026
+**Versión:** 3.0
+**Fecha:** 20 de agosto de 2026
 **Documento padre:** `00-Vision-y-Modulos.md`
 
 Decisiones transversales al producto entero, no de un módulo concreto. El modelo de datos y el
@@ -209,40 +209,102 @@ la práctica.
 ### 3.1 Servicios que usamos
 
 - **PostgreSQL** con API REST autogenerada y seguridad a nivel de fila (RLS).
-- **Autenticación** email + contraseña, con recuperación de contraseña por email. OAuth con Google
-  queda como opcional post-MVP.
+- **Autenticación** delegada a un proveedor de identidad externo (Google). Sin contraseñas
+  propias. Ver el apartado 3.3.
 - **Realtime:** suscripción a cambios en las tablas del hogar.
 - **Hosting** del frontend con URL en vivo.
 
 InsForge es open source (Apache-2.0) y autoalojable con Docker, lo que mitiga la dependencia de
 proveedor. La base es PostgreSQL estándar, así que los datos son exportables.
 
-> Pendiente de validar con un spike antes de construir sobre ello: el detalle exacto de la API de
-> RLS y de realtime, que es lo que sostiene la regla de seguridad del hogar.
+> **Validado el 20 de agosto de 2026:** InsForge permite triggers y funciones `SECURITY DEFINER`,
+> la regla de seguridad de fila del hogar se puede expresar, y el realtime se expone por WebSocket.
+> Los tres riesgos que bloqueaban este apartado están cerrados. Ver el bloque 1 de
+> `04-Plan-de-trabajo.md`.
 
 ### 3.2 Seguridad
 
 - Regla única y central: un usuario solo puede leer y escribir filas cuyo `household_id`
   corresponda a un hogar del que es miembro. Se aplica en el backend, nunca solo en el cliente.
-- El código de invitación solo se acepta mientras el hogar tenga menos de dos miembros.
+- Sin límite de miembros y sin flujo de invitación en el MVP: las altas se hacen a mano en la
+  consola. Ver apartado 4.1 de `05-Esquema-BD.md`.
+- `audit_log` es de solo añadir: lectura para los miembros del hogar, escritura solo por trigger
+  `SECURITY DEFINER`. Ver apartado 6 de `05-Esquema-BD.md`.
+
+### 3.3 Autenticación: OAuth de terceros, sin contraseñas
+
+**Decisión del 20 de agosto de 2026.** ADuo no gestiona contraseñas. El acceso se delega en un
+proveedor de identidad externo a través de InsForge, empezando por **Google**.
+
+**Motivo.** El plan Free de InsForge no envía correo de recuperación de contraseña, y RF-1.1 exigía
+poder recuperar el acceso. Sin correo, un login con contraseña propia es una trampa: el día que
+alguien la olvide pierde el hogar entero. Delegar en Google elimina el requisito en lugar de
+incumplirlo.
+
+**Lo que desaparece del producto,** y esto es la mitad del valor de la decisión:
+
+- La pantalla de registro separada de la de acceso: con OAuth son la misma acción.
+- El flujo de recuperación de contraseña completo.
+- La decisión sobre verificación de email: el proveedor ya entrega el email verificado.
+- El almacenamiento y el hasheo de contraseñas, y con ello toda esa superficie de ataque.
+
+**Lo que se acepta a cambio.** Dependencia de un tercero: si Google no responde, no se entra. A esta
+escala es un riesgo menor que el propio plan Free, y se contiene añadiendo un segundo proveedor el
+día que haga falta.
+
+**Apple queda fuera del MVP.** Requiere el Apple Developer Program, de pago anual, y no aporta nada
+que Google no cubra para este hogar. La regla de App Review que obliga a ofrecer *Sign in with Apple*
+cuando ya se ofrecen otros logins sociales **no aplica aquí**, porque una PWA instalada desde el
+navegador no pasa por App Review. Si algún día se empaqueta para la App Store, entonces sí habría
+que añadirlo.
+
+**Consecuencias técnicas de obligado cumplimiento:**
+
+- Hay que registrar los **URI de redirección** de OAuth para los dos orígenes: el de desarrollo local
+  y el de producción. Son distintos y ambos tienen que estar dados de alta.
+- El **nombre visible y el avatar** los aporta el proveedor, así que `display_name` se rellena solo
+  la primera vez. Sigue siendo editable por su dueño (RF-1.2).
+- **Cerrar sesión es local.** Salir de ADuo no cierra la sesión de Google en el dispositivo.
+- El esquema **no cambia**: `auth.uid()` sigue siendo la identidad y `household_members.user_id`
+  sigue apuntando al usuario del proveedor de auth.
+
+⚠️ **Riesgo abierto: el redirect de OAuth en la PWA instalada.** Una PWA en `display: standalone`
+puede abrir el redirect fuera del contexto de la aplicación, en el navegador del sistema, dejando la
+sesión donde no sirve. Hay que probarlo **en el móvil con la app instalada**, no en el navegador de
+escritorio, donde siempre funciona. Ver la tarea 3.3 de `04-Plan-de-trabajo.md`.
 
 ## 4. Realtime — patrón de integración
 
 La decisión de qué librería sostiene el tiempo real está en el apartado 2.5. Aquí va el patrón
 concreto. Todo esto vive en la capa `infrastructure/` del módulo correspondiente y en ninguna otra.
 
-### 4.1 El patrón
+### 4.1 Cómo se reparten el trabajo las dos capas
 
-**No existe adaptador oficial de InsForge para TanStack DB.** Ese hueco lo rellenamos nosotros, y es
-el punto de mayor incertidumbre técnica del MVP:
+**InsForge expone el realtime por WebSocket** (confirmado el 20 de agosto de 2026). No existe
+adaptador oficial para TanStack DB, así que la costura la escribimos nosotros. Y hay que ser preciso
+en quién hace qué, porque es fácil describirlo mal:
+
+**El WebSocket no se conecta "a través de" TanStack Query.** TanStack Query no tiene transporte de
+WebSocket, ni lo pretende. El reparto real es:
+
+| Capa | De qué se encarga |
+|---|---|
+| TanStack Query | La **carga inicial** de cada colección (`queryFn`) y el refetch al recuperar foco o reconectar. Nada más. |
+| WebSocket de InsForge | Los **cambios posteriores**, escritos directamente en la colección. |
+| TanStack DB | Guarda el estado, resuelve las live queries de forma incremental y gestiona las mutaciones optimistas. |
+
+El patrón concreto:
 
 - Una **colección por tabla del hogar**, creada con `queryCollectionOptions`: recibe `queryKey`,
   `queryFn` y `queryClient` —primitivas de TanStack Query— más `getKey` y los manejadores
   `onInsert` / `onUpdate` / `onDelete` que persisten contra InsForge.
-- Suscripción a inserts, updates y deletes de InsForge, **filtrada por `household_id`**.
-- Al recibir un evento del otro dispositivo, se vuelca el cambio a la colección mediante **direct
-  writes**, que es el mecanismo que TanStack DB prevé para actualizaciones en tiempo real desde
-  fuentes externas.
+- Suscripción por WebSocket a inserts, updates y deletes, **filtrada por `household_id`**.
+- Al recibir un evento del otro dispositivo se aplica con **direct writes**, que es exactamente el
+  mecanismo que TanStack DB documenta para fuentes externas en tiempo real:
+  `collection.utils.writeInsert`, `writeUpdate` y `writeDelete`, agrupados en `writeBatch` cuando
+  llega más de un cambio, para que la actualización sea atómica.
+- **Nunca se invalida la query al recibir un evento.** Invalidar dispara un refetch completo de la
+  tabla por cada cambio de una fila, que es justo lo que este montaje existe para evitar.
 - Las live queries que dependan de esos datos se actualizan de forma incremental. El buscador de
   RF-1.6 es una de ellas.
 - Los cambios propios se ven al instante por las mutaciones optimistas de la colección, con rollback
@@ -250,14 +312,19 @@ el punto de mayor incertidumbre técnica del MVP:
 - Fallback si se cae la conexión realtime: refetch de la query collection al recuperar el foco. Un
   WebSocket caído no reenvía lo que se perdió.
 
-### 4.2 Riesgo y verificación previa
+### 4.2 La trampa de los direct writes
 
-Que este patrón funcione depende de la forma exacta de los eventos de realtime de InsForge y de que
-encajen con los direct writes de TanStack DB. **Nadie lo ha validado todavía**, y de ello dependen la
-decisión del apartado 2.5 y el diseño entero de `infrastructure/`.
+⚠️ **Un direct write lo puede pisar la siguiente ejecución del `queryFn`.** Es comportamiento
+documentado de TanStack DB, no un fallo: el `queryFn` devuelve el estado completo del servidor y
+sobrescribe la colección, incluido lo que el WebSocket acababa de escribir.
 
-Por eso se verifica con un spike **antes** de montar el proyecto, no al llegar a la tarea que lo
-necesita. Ver el bloque 1 de `04-Plan-de-trabajo.md`.
+El síntoma en producción es de los que cuestan una tarde: **un artículo borrado reaparece solo**, o
+un tachado se destacha, sin patrón aparente, porque depende de cuándo toque refetch.
+
+Se evita con un **`staleTime` alto** en la colección. Si el WebSocket es la fuente de verdad de los
+cambios, el refetch periódico sobra: solo hace falta al recuperar foco o al reconectar, que es
+precisamente cuando sí queremos que pise lo local. Esto se decide al escribir la tarea 4.5 y se
+prueba explícitamente.
 
 ## 5. Despliegue y entornos
 

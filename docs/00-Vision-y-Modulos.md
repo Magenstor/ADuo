@@ -1,15 +1,16 @@
 # ADuo — Visión de producto y mapa de módulos
 
-**Versión:** 2.0
-**Fecha:** 17 de agosto de 2026
+**Versión:** 2.1
+**Fecha:** 20 de agosto de 2026
 **Estado:** vigente. Es el documento raíz del producto.
 
 ---
 
 ## 1. Objetivo del producto
 
-ADuo es una aplicación de gestión doméstica para dos personas que conviven. Cubre dos
-necesidades que hoy se resuelven con herramientas separadas:
+ADuo es una aplicación de gestión doméstica para las personas que comparten una casa —típicamente
+una pareja, pero sin límite de miembros. Cubre dos necesidades que hoy se resuelven con herramientas
+separadas:
 
 - **Qué hace falta en casa** — la lista de la compra.
 - **El dinero de la casa** — qué se gasta, quién lo paga y de dónde sale ese dinero.
@@ -37,8 +38,8 @@ Un módulo puede aparecer parcialmente en una fase y completarse en otra posteri
 - **Multiplataforma:** funciona en navegador y en móvil/tablet (Android e iOS) mediante una PWA
   instalable. Un único desarrollo.
 - **Sincronización:** los datos viven en un backend. Ningún dato exclusivamente local.
-- **Privacidad:** los datos solo son visibles para los miembros del hogar. Contraseñas hasheadas,
-  comunicación por HTTPS.
+- **Privacidad:** los datos solo son visibles para los miembros del hogar. Comunicación por HTTPS.
+  ADuo **no almacena contraseñas**: el acceso se delega en un proveedor de identidad externo.
 - **Moneda:** euros con dos decimales, almacenados en céntimos enteros. Sin multi-moneda.
 - **Idioma:** español. Sin i18n.
 - **Offline:** deseable, no bloqueante. El service worker cachea la aplicación, pero no se
@@ -50,7 +51,7 @@ Un módulo puede aparecer parcialmente en una fase y completarse en otra posteri
 
 **Por qué es el MVP.** Es el módulo con el dominio más simple, y precisamente por eso es el mejor
 primero. Obliga a resolver de una vez todo lo transversal —autenticación, creación del hogar,
-código de invitación, sincronización en tiempo real, PWA instalable y despliegue— con la lógica
+sincronización en tiempo real, PWA instalable y despliegue— con la lógica
 de negocio más liviana posible. Al terminarlo hay infraestructura probada en uso real, y el
 módulo 2, que sí tiene lógica delicada, se construye encima de cimientos que ya funcionan.
 
@@ -89,9 +90,12 @@ funcional ya realizado; **no es una especificación cerrada**.
 
 ### 5.2 Fuera del alcance de este módulo
 
-Grupos de más de dos personas; reparto proporcional automático a los ingresos; escaneo de tickets
-y adjuntar fotos; conexión con bancos; gastos recurrentes automáticos (candidato claro para la
-iteración siguiente); notificaciones push; exportar a CSV o Excel.
+Reparto proporcional automático a los ingresos; escaneo de tickets y adjuntar fotos; conexión con
+bancos; gastos recurrentes automáticos (candidato claro para la iteración siguiente); notificaciones
+push; exportar a CSV o Excel.
+
+Ya **no** está fuera de alcance el grupo de más de dos personas: desde el 17 de agosto de 2026 no hay
+límite de miembros.
 
 ### 5.3 Sin definir todavía
 
@@ -131,10 +135,11 @@ el primer día una referencia nullable a la bolsa que lo financia. No se constru
 3 por adelantado: solo se deja la costura. Si no se deja, cuando llegue el módulo 3 habrá que
 migrar meses de gastos reales y rehacer el cálculo de balance.
 
-**7.3 El reparto se guarda por usuario, nunca como porcentaje de "persona A".** Un campo
-`split_a` obliga a definir arbitrariamente quién es A, y cierra la puerta a más de dos miembros
-—que es justo lo contrario de lo que este documento pide. El reparto vive en una tabla de partes
-por usuario.
+**7.3 El reparto se guarda por usuario, nunca como porcentaje de "persona A".** Ya no es una
+recomendación: desde que no hay límite de miembros (17 de agosto de 2026), un campo `split_a` es
+**imposible**. Un porcentaje único que describe "la parte de la persona A" no puede repartir entre
+tres personas, y no hay forma de parchearlo. El reparto vive obligatoriamente en una tabla de partes
+por usuario. Ver el apartado 5 de `05-Esquema-BD.md`.
 
 **7.4 El hogar es la raíz de todo.** Hogar más miembros es el modelo base que el módulo 1 ya
 necesita para compartir la lista, y del que cuelgan después gastos, categorías y bolsas. La regla
@@ -150,9 +155,11 @@ Ninguna resuelta. Se cierran al definir el módulo al que pertenecen.
 **Transversales — hay que resolverlas en el MVP,** porque el módulo 1 es el que trae la
 autenticación y el hogar. Se tratan en `01-Modulo-1-Lista-Compra.md`.
 
-- Recuperación de contraseña y verificación de email.
-- Onboarding: qué se ve si el segundo miembro no se une nunca, si el código de invitación se
-  puede regenerar, si un usuario puede pertenecer a dos hogares, y si se puede salir de un hogar.
+- ~~Recuperación de contraseña y verificación de email.~~ **Resuelto el 20 de agosto de 2026:** el
+  acceso se delega en Google, así que ADuo no tiene contraseñas que recuperar ni emails que
+  verificar. Ver RF-1.1.
+- Onboarding: **cómo se invita a un miembro**, diferido al terminar el MVP (20 de agosto de 2026);
+  si un usuario puede pertenecer a dos hogares, y si se puede salir de un hogar.
 - Zona horaria de referencia para los cortes de periodo.
 
 **Del módulo 2:**
@@ -181,3 +188,4 @@ autenticación y el hogar. Se tratan en `01-Modulo-1-Lista-Compra.md`.
 | `02-Decisiones-tecnicas-stack.md` | Stack, librerías y decisiones técnicas transversales. |
 | `03-Arquitectura.md` | Estructura de carpetas, capas, reglas de importación y tests. |
 | `04-Plan-de-trabajo.md` | Tareas del módulo 1 por prioridad, con lo bloqueante y los riesgos. |
+| `05-Esquema-BD.md` | Esquema SQL, convención de auditoría y seguridad de fila. |

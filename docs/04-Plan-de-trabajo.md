@@ -1,7 +1,7 @@
 # Plan de trabajo — Módulo 1
 
-**Versión:** 1.0
-**Fecha:** 17 de agosto de 2026
+**Versión:** 2.0
+**Fecha:** 20 de agosto de 2026
 **Documento padre:** `00-Vision-y-Modulos.md`
 
 ---
@@ -24,34 +24,47 @@ Los bloques van en orden. Dentro de cada bloque, el orden también importa salvo
 
 ## Bloque 0 — Antes de escribir código
 
-- [ ] **0.1** 🔴 `git init`, `.gitignore` de Node, y primer commit con los documentos de `docs/`.
-      Ahora mismo hay varias horas de decisiones sin historial ni respaldo.
-- [ ] **0.2** 🔴 **Definir el esquema SQL completo del módulo 1.** Las cuatro tablas del apartado 4
-      de `01-Modulo-1-Lista-Compra.md` como DDL real: tipos, claves, `on delete cascade` de
-      `shopping_items`, unicidad de `invite_code`, y la restricción que garantiza que el
-      `household_id` de un artículo coincide con el de su lista.
-- [ ] **0.3** 🔴 **Decidir cómo se impone el máximo de dos miembros por hogar.** No sale de un tipo
-      de columna: es una regla de negocio y necesita mecanismo explícito en base de datos.
-- [ ] **0.4** 🟡 Definir el formato del código de invitación: longitud, alfabeto y cómo se garantiza
-      que no colisione.
+- [x] **0.1** 🔴 `git init` y primer commit. **Hecho.** Queda el `.gitignore`, que lo genera
+      `create-vite` en la tarea 2.1. ⚠️ Antes de poner ninguna clave en un `.env`, comprobar que está
+      ignorado: la plantilla de Vite cubre `*.local` pero no necesariamente `.env` a secas.
+- [x] **0.2** 🔴 **Esquema de base de datos definido.** Ver `05-Esquema-BD.md`: borrado físico,
+      auditoría de creación y modificación en la fila, auditoría de borrado en `audit_log` por
+      trigger.
+- [x] **0.3** 🔴 **Sin límite de miembros por hogar** (decisión del 17 de agosto de 2026). No hay
+      nada que imponer: se crea un grupo y se invita a quien se quiera. Riesgo eliminado.
+- [x] **0.4** 🟡 **Sin código de invitación en el MVP** (decisión del 20 de agosto de 2026). Los
+      miembros se dan de alta insertando la fila de `household_members` a mano en la consola de
+      InsForge. Se retoma al terminar el MVP. Diferirlo es gratis: añadir la columna después es un
+      `ALTER TABLE`, no una migración.
 
-## Bloque 1 — Validar InsForge antes de construir sobre él ⚠️
+## Bloque 1 — Validar InsForge antes de construir sobre él
 
-Este bloque va antes del andamiaje del proyecto **a propósito**. Todo lo que viene después asume que
-InsForge hace tres cosas que nadie ha comprobado. Descubrir aquí que no las hace cuesta un día;
-descubrirlo en el bloque 4 cuesta el módulo.
+**Los cuatro riesgos que bloqueaban este bloque están resueltos** (20 de agosto de 2026). Lo que
+queda no es incertidumbre, es trabajo: saber que algo *se puede hacer* no es tenerlo hecho.
 
-- [ ] **1.1** 🔴 Crear el proyecto en InsForge cloud (plan Free) y crear las tablas del 0.2.
-- [ ] **1.2** 🔴 Configurar auth de email y contraseña, y **comprobar que la recuperación de
-      contraseña por email funciona de verdad** (RF-1.1). Es un requisito del MVP y depende de que el
-      proveedor envíe correo.
-- [ ] **1.3** 🔴⚠️ Escribir las políticas de seguridad de fila y **probar explícitamente que un
-      usuario de otro hogar no puede leer ni escribir nuestras filas**. Es la única garantía de
-      privacidad del producto y el criterio de aceptación 13.
-- [ ] **1.4** 🔴⚠️ **Spike de realtime + TanStack DB.** Suscribirse a `shopping_items` filtrando por
-      `household_id`, capturar la forma exacta de los eventos, y volcarlos a una colección de
-      TanStack DB con direct writes. Un script mínimo, sin arquitectura.
-      **Si esto no encaja, cambia la decisión del apartado 2.5 del stack.** Ver `02-Decisiones-tecnicas-stack.md`, apartado 4.2.
+Aun así, el bloque sigue yendo antes del andamiaje. Escribir y probar las políticas de seguridad de
+fila sobre el proyecto real es más barato que descubrir en el bloque 4 que la regla no cubre un caso.
+
+- [ ] **1.1** 🔴 Crear el proyecto en InsForge cloud (plan Free) y aplicar el DDL de `05-Esquema-BD.md`.
+- [x] **1.1b** 🔴 **InsForge permite triggers y funciones `SECURITY DEFINER`.** Confirmado. La
+      auditoría de `05-Esquema-BD.md` se puede implementar tal y como está diseñada.
+- [ ] **1.2** 🔴 **Configurar OAuth de Google en InsForge** (RF-1.1). InsForge **no** ofrece
+      recuperación de contraseña por correo, así que no hay login con contraseña propia: se delega en
+      Google. Incluye dar de alta los **URI de redirección de desarrollo y de producción**, que son
+      distintos y hacen falta los dos. Ver apartado 3.3 de `02-Decisiones-tecnicas-stack.md`.
+- [ ] **1.3** 🔴 Escribir las políticas de seguridad de fila y **probar explícitamente que un
+      usuario de otro hogar no puede leer ni escribir nuestras filas**. La regla del hogar **se puede
+      expresar** en InsForge (confirmado), así que esto ya no es un riesgo, pero sigue siendo la única
+      garantía de privacidad del producto y el criterio de aceptación 12. Incluye `audit_log`: solo
+      lectura para los miembros, y escritura prohibida para todos (criterio 14).
+- [ ] **1.4** 🔴 **Spike de realtime + TanStack DB.** InsForge expone el realtime **por WebSocket**
+      (confirmado), y el reparto de capas está decidido en el apartado 4.1 del stack: Query hace la
+      carga inicial, el WebSocket aplica los cambios con direct writes. Falta capturar la **forma
+      exacta de los eventos** y volcarlos a una colección. Un script mínimo, sin arquitectura.
+- [ ] **1.4b** 🔴⚠️ **Probar que el refetch no pisa los direct writes.** Aplicar un cambio por
+      WebSocket, forzar un refetch y comprobar que el cambio sobrevive. Es comportamiento documentado
+      de TanStack DB y se controla con `staleTime`. Ver apartado 4.2 del stack: el síntoma es un
+      artículo borrado que reaparece solo.
 - [ ] **1.5** 🟡 Comprobar si el plan Free permite un segundo proyecto como entorno de pruebas. Si no,
       decidir la convención de datos de prueba.
 
@@ -75,14 +88,21 @@ descubrirlo en el bloque 4 cuesta el módulo.
 Transversal: vive en `shared/hogar/`, no es un módulo. Bloquea todo el bloque 4, porque un artículo
 sin hogar no existe.
 
-- [ ] **3.1** 🔴 Registro, inicio de sesión y cierre de sesión.
+- [ ] **3.1** 🔴 Entrar con Google y cerrar sesión. **Una sola pantalla:** con OAuth, registrarse e
+      iniciar sesión son la misma acción (RF-1.1).
 - [ ] **3.2** 🔴 Persistencia de sesión y protección de rutas: la app no pide login en cada apertura.
-- [ ] **3.3** 🔴 Recuperación de contraseña, flujo completo en la interfaz (RF-1.1).
-- [ ] **3.4** 🔴 Crear hogar al registrarse el primero, con su código de invitación, y **crear la
-      lista inicial "La compra"** (RF-1.3).
-- [ ] **3.5** 🔴 Unirse a un hogar por código, con el rechazo cuando ya hay dos miembros (RF-1.2).
-- [ ] **3.6** 🟡 Regenerar el código de invitación, invalidando el anterior.
-- [ ] **3.7** 🟡 Editar el nombre visible del propio miembro.
+- [ ] **3.3** 🔴⚠️ **Probar el redirect de OAuth en la PWA ya instalada, en iOS y en Android.** Una
+      app en `display: standalone` puede abrir el redirect en el navegador del sistema y dejar la
+      sesión fuera de la aplicación. En el navegador de escritorio esto siempre funciona, así que
+      probarlo ahí no demuestra nada. Es el riesgo número 1 del plan.
+- [ ] **3.4** 🔴 Crear el hogar la primera vez que entra alguien, y **crear la lista inicial
+      "La compra"** (RF-1.3).
+- [ ] **3.5** 🔴 **Dar de alta al segundo miembro a mano** en `household_members` desde la consola de
+      InsForge. No es una pantalla, es una fila. Pero **bloquea la validación de todo el tiempo
+      real**: con un solo miembro los criterios 3 a 6 no se pueden probar.
+- [ ] **3.6** ⚪ Flujo de invitación. **Fuera del MVP** (tarea 0.4). Se retoma cuando el resto
+      funcione.
+- [ ] **3.7** 🟡 Editar el nombre visible del propio miembro, prerrellenado con el que da Google.
 - [ ] **3.8** 🟡 Estado de la interfaz cuando el segundo miembro todavía no se ha unido.
 
 ## Bloque 4 — Módulo de listas
@@ -101,6 +121,7 @@ aplicación, luego interfaz. Es la regla de `03-Arquitectura.md`.
 ### 4b. Infraestructura y aplicación
 
 - [ ] **4.4** 🔴 Repositorios de listas y artículos contra InsForge, devolviendo tipos de dominio.
+      Sin filtros de borrado: el borrado es físico.
 - [ ] **4.5** 🔴 Colecciones de TanStack DB y suscripción de realtime, según el patrón validado
       en 1.4.
 - [ ] **4.6** 🔴 `useListas` y `useArticulos` en `application/`.
@@ -138,19 +159,34 @@ Nada espera a estas tareas. Se hacen cuando molesten lo suficiente.
 
 ---
 
-## Los cuatro riesgos reales
+## Riesgos
 
-Todo lo demás es trabajo conocido. Estos cuatro pueden cambiar decisiones ya tomadas:
+### Cerrados el 20 de agosto de 2026
 
-1. **1.4 — Realtime de InsForge con TanStack DB.** No hay adaptador oficial. Si no encaja, cambia el
-   apartado 2.5 del stack.
-2. **1.3 — Seguridad de fila.** Si no se puede expresar la regla del hogar, el modelo de privacidad
-   del producto entero se replantea.
-3. **1.2 — Correo de recuperación de contraseña.** Si el plan Free no envía correo de forma fiable,
-   RF-1.1 no se cumple y hay que buscar otra vía.
-4. **0.3 — Máximo dos miembros por hogar.** Si no hay forma limpia de imponerlo en base de datos,
-   queda como regla de aplicación, que es más débil.
+Los cuatro riesgos originales del plan están resueltos:
+
+| Riesgo original | Resultado |
+|---|---|
+| Triggers y `SECURITY DEFINER` en InsForge | ✅ Permitidos. La auditoría se implementa como está diseñada. |
+| Expresar la regla de seguridad de fila del hogar | ✅ Se puede. El modelo de privacidad se mantiene. |
+| Realtime de InsForge con TanStack DB | ✅ InsForge da WebSocket. Reparto de capas en el apartado 4.1 del stack. |
+| Correo de recuperación de contraseña | ❌ **No lo hay.** Resuelto eliminando el requisito: se delega el acceso en Google. |
+
+El cuarto no se resolvió comprobando que funcionaba, sino **cambiando el producto para no
+necesitarlo**. Es la forma más barata de cerrar un riesgo: quitar de en medio lo que dependía de él.
+
+### Los dos riesgos vivos
+
+1. **3.3 — El redirect de OAuth en la PWA instalada.** Es ahora el riesgo mayor del MVP, porque
+   cruza los dos requisitos que definen el producto: entrar (RF-1.1) y ser una app instalada
+   (RF-1.8). Una PWA en `display: standalone` puede mandar el redirect al navegador del sistema y
+   dejar allí la sesión. **Solo se detecta probando en el móvil con la app instalada.** Si falla, no
+   invalida el stack, pero obliga a resolver el flujo de acceso de otra manera.
+2. **1.4b — Direct writes pisados por el refetch.** Comportamiento documentado de TanStack DB, no un
+   fallo. Se controla con `staleTime`. No cambia ninguna decisión, pero si se pasa por alto produce
+   el peor tipo de bug: intermitente y sin patrón visible.
 
 **Regla de oro del plan:** el bloque 1 va antes del bloque 2. Es tentador empezar montando el
-proyecto porque es lo cómodo y lo que se sabe hacer. Pero montar el andamiaje sobre supuestos no
-verificados es exactamente cómo se llega a tirar una semana de trabajo.
+proyecto porque es lo cómodo y lo que se sabe hacer. Que los riesgos estén cerrados no cambia el
+orden: las políticas de seguridad y el spike de realtime siguen siendo más baratos ahora que
+después.
