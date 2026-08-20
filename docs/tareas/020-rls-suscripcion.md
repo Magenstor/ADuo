@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | ✅ hecha |
 | **Bloque** | Backend · Realtime |
 | **Depende de** | [017](017-canal-hogar.md) |
 | **Bloquea a** | 023 |
@@ -13,8 +13,8 @@ Que solo se pueda escuchar el canal del hogar propio.
 
 ## Pasos
 
-- [ ] Política `SELECT` sobre `realtime.channels` que use `realtime.channel_name()` para extraer el uuid y comprobar la pertenencia en `household_members`.
-- [ ] `ALTER TABLE realtime.channels ENABLE ROW LEVEL SECURITY`.
+- [x] Política `SELECT` sobre `realtime.channels` que use `realtime.channel_name()` para extraer el uuid y comprobar la pertenencia en `household_members`.
+- [x] `ALTER TABLE realtime.channels ENABLE ROW LEVEL SECURITY`.
 
 ## Hecho cuando
 
@@ -28,3 +28,7 @@ cualquier hogar.
 
 Se usa `realtime.channel_name()` y no `pattern` porque la tabla guarda el patrón (`household:%`)
 mientras que el cliente pide un canal resuelto (`household:<uuid>`).
+
+## Resultado (20 de agosto de 2026)
+
+Política `SELECT` sobre `realtime.channels` con `realtime.channel_name()`. **Sin esto el realtime está abierto por defecto.**

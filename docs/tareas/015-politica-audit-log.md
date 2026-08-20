@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | ✅ hecha |
 | **Bloque** | Backend · InsForge |
 | **Depende de** | [013](013-habilitar-rls.md) |
 | **Bloquea a** | 016 |
@@ -13,8 +13,8 @@ Que el registro sea legible por los miembros y no lo pueda tocar nadie.
 
 ## Pasos
 
-- [ ] Política de `SELECT` para los miembros del hogar.
-- [ ] **Ninguna** política de `INSERT`, `UPDATE` ni `DELETE`, para nadie.
+- [x] Política de `SELECT` para los miembros del hogar.
+- [x] **Ninguna** política de `INSERT`, `UPDATE` ni `DELETE`, para nadie.
 
 ## Hecho cuando
 
@@ -24,3 +24,7 @@ Que el registro sea legible por los miembros y no lo pueda tocar nadie.
 ## Ojo con esto
 
 Es el criterio de aceptación 14. Un registro de auditoría que se puede editar no sirve para nada.
+
+## Resultado (20 de agosto de 2026)
+
+`audit_log` con **solo** política de `SELECT`. Verificado: 0 políticas de INSERT, UPDATE y DELETE.

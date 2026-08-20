@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | ⛔ bloqueada |
 | **Bloque** | Backend · Datos iniciales |
 | **Depende de** | [016](016-probar-aislamiento.md) |
 | **Bloquea a** | 025 |
@@ -30,3 +30,7 @@ Las dos salidas: crear el hogar **después del primer login** (tarea
 [036](036-login-google.md)), o pasar un `created_by` explícito con el id de un usuario que ya exista.
 
 Descubierto al verificar el esquema en la tarea [008](008-verificar-esquema.md).
+
+## Por qué está bloqueada (20 de agosto de 2026)
+
+**Necesita un usuario.** `created_by` es `NOT NULL` y `auth.uid()` es `NULL` en consulta de administrador. Se hace tras la tarea [036](036-login-google.md).

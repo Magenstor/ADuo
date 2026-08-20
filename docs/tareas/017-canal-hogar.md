@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | ✅ hecha |
 | **Bloque** | Backend · Realtime |
 | **Depende de** | [008](008-verificar-esquema.md) |
 | **Bloquea a** | 018, 020 |
@@ -13,7 +13,7 @@ Un canal por hogar. Es lo que convierte el filtrado por hogar en algo que no hay
 
 ## Pasos
 
-- [ ] `INSERT INTO realtime.channels (pattern, description, enabled) VALUES ('household:%', ..., true)`.
+- [x] `INSERT INTO realtime.channels (pattern, description, enabled) VALUES ('household:%', ..., true)`.
 
 ## Hecho cuando
 
@@ -27,3 +27,7 @@ publicamos nosotros.
 
 Los patrones usan `LIKE` de SQL con `:` de separador y `%` de comodín. **No usar `_`**, que en `LIKE`
 es un comodín de un carácter.
+
+## Resultado (20 de agosto de 2026)
+
+Patrón `household:%` creado y habilitado. Migración `008_realtime.sql`.

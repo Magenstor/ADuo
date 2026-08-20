@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | ⛔ bloqueada |
 | **Bloque** | Backend · Datos iniciales |
 | **Depende de** | [005](005-tabla-household-members.md), [024](024-crear-hogar.md) |
 | **Bloquea a** | 061 |
@@ -30,3 +30,7 @@ nada.
 Pero esta fila **no es opcional**: con un solo miembro en el hogar, los criterios de aceptación 3 a 6
 —que son la sincronización en tiempo real, la apuesta técnica central del módulo— **no se pueden
 probar**. La invitación es prescindible; tener dos miembros de verdad, no.
+
+## Por qué está bloqueada (20 de agosto de 2026)
+
+**Necesita usuarios en `auth.users`.** Se hace tras la tarea [036](036-login-google.md).

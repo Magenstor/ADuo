@@ -45,33 +45,33 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | 006 | [Crear la tabla `shopping_lists`](006-tabla-shopping-lists.md) | ✅ |
 | 007 | [Crear la tabla `shopping_items`](007-tabla-shopping-items.md) | ✅ |
 | 008 | [Verificar el esquema aplicado](008-verificar-esquema.md) | ✅ |
-| 009 | [Auditoría en la fila: `set_auditoria()` y sus triggers](009-auditoria-en-fila.md) | ☐ |
-| 010 | [Crear la tabla `audit_log`](010-tabla-audit-log.md) | ☐ |
-| 011 | [`registrar_auditoria()` y sus triggers](011-trigger-auditoria.md) | ☐ |
-| 012 | [Probar la auditoría y el borrado en cascada](012-probar-auditoria.md) | ☐ |
-| 013 | [Habilitar RLS en las cinco tablas](013-habilitar-rls.md) | ☐ |
-| 014 | [Políticas de miembro del hogar](014-politicas-hogar.md) | ☐ |
-| 015 | [Blindar `audit_log`](015-politica-audit-log.md) | ☐ |
-| 016 | [Probar el aislamiento con dos usuarios de verdad](016-probar-aislamiento.md) | ☐ |
+| 009 | [Auditoría en la fila: `set_auditoria()` y sus triggers](009-auditoria-en-fila.md) | ✅ |
+| 010 | [Crear la tabla `audit_log`](010-tabla-audit-log.md) | ✅ |
+| 011 | [`registrar_auditoria()` y sus triggers](011-trigger-auditoria.md) | ✅ |
+| 012 | [Probar la auditoría y el borrado en cascada](012-probar-auditoria.md) | ✅ |
+| 013 | [Habilitar RLS en las cinco tablas](013-habilitar-rls.md) | ✅ |
+| 014 | [Políticas de miembro del hogar](014-politicas-hogar.md) | ✅ |
+| 015 | [Blindar `audit_log`](015-politica-audit-log.md) | ✅ |
+| 016 | [Probar el aislamiento con dos usuarios de verdad](016-probar-aislamiento.md) | ⛔ |
 
 ### Backend · Realtime
 
 | # | Tarea | Estado |
 |---|---|---|
-| 017 | [Crear el patrón de canal `household:%`](017-canal-hogar.md) | ☐ |
-| 018 | [Función `publicar_cambio()`](018-funcion-publicar.md) | ☐ |
-| 019 | [Triggers de publicación en listas y artículos](019-triggers-publicacion.md) | ☐ |
-| 020 | [RLS de suscripción al canal](020-rls-suscripcion.md) | ☐ |
-| 021 | [Bloquear la publicación desde el cliente](021-bloquear-publish.md) | ☐ |
-| 022 | [Fijar la retención de `realtime.messages`](022-retencion-mensajes.md) | ☐ |
-| 023 | [Capturar la forma exacta de los eventos](023-capturar-eventos.md) | ☐ |
+| 017 | [Crear el patrón de canal `household:%`](017-canal-hogar.md) | ✅ |
+| 018 | [Función `publicar_cambio()`](018-funcion-publicar.md) | ✅ |
+| 019 | [Triggers de publicación en listas y artículos](019-triggers-publicacion.md) | ✅ |
+| 020 | [RLS de suscripción al canal](020-rls-suscripcion.md) | ✅ |
+| 021 | [Bloquear la publicación desde el cliente](021-bloquear-publish.md) | ✅ |
+| 022 | [Fijar la retención de `realtime.messages`](022-retencion-mensajes.md) | ⛔ |
+| 023 | [Capturar la forma exacta de los eventos](023-capturar-eventos.md) | ⛔ |
 
 ### Backend · Datos iniciales
 
 | # | Tarea | Estado |
 |---|---|---|
-| 024 | [Crear el hogar y su lista inicial](024-crear-hogar.md) | ☐ |
-| 025 | [Dar de alta a los miembros a mano](025-alta-miembros.md) | ☐ |
+| 024 | [Crear el hogar y su lista inicial](024-crear-hogar.md) | ⛔ |
+| 025 | [Dar de alta a los miembros a mano](025-alta-miembros.md) | ⛔ |
 
 ### Frontend · Andamiaje
 
