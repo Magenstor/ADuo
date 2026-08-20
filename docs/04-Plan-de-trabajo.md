@@ -56,9 +56,10 @@ Comprobado el 20 de agosto de 2026 con el MCP de InsForge contra el proyecto rea
 - [ ] **A1.4** 🔴 Obtener la **anon key** y dejar anotados `baseUrl` y `anonKey` para el frontend.
       ⚠️ La anon key va en una variable `VITE_` y **acaba en el bundle público**: eso es correcto
       porque quien protege los datos es RLS. Una clave de servicio ahí **jamás**.
-- [ ] **A1.5** 🟡 Entrar una vez con Google y **anotar la forma real de la fila de usuario**: nombre
-      del esquema, nombre de la tabla y qué campos trae (nombre visible, avatar). El esquema de
-      `05-Esquema-BD.md` asume `auth.users`, y hay que confirmarlo antes de escribir las FK.
+- [x] **A1.5** 🟡 **`auth.users(id uuid)` existe** (verificado el 20 de agosto de 2026). Las FK del
+      esquema funcionan tal y como están escritas. La tabla trae además `email`, `email_verified` y
+      un `profile jsonb` — de ahí debería salir el nombre y el avatar que da Google, pendiente de
+      confirmar con el primer login real (tarea B2.4).
 
 ## A2 — Tablas
 

@@ -1,5 +1,5 @@
 {
-  "projectName": "frontend,
+  "projectName": "frontend",
   "mode": "file-router",
   "typescript": true,
   "packageManager": "pnpm",
