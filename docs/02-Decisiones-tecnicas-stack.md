@@ -281,7 +281,11 @@ Nuestras claves ajenas apuntan a algo estable.
 **Consecuencias técnicas de obligado cumplimiento:**
 
 - `signInWithOAuth` exige un **`redirectTo`**, y el SDK detecta solo el `insforge_code` de vuelta,
-  canjea la sesión y la guarda. El refresco va en una cookie `httpOnly`.
+  canjea la sesión y la guarda. El flujo es **PKCE**. El refresco va en una cookie `httpOnly`.
+- ⚠️ **`allowedRedirectUrls` vacío permite CUALQUIER redirección**, y así viene el proyecto de
+  fábrica. Es una redirección abierta y hay que cerrarla antes de producción: con la lista vacía,
+  cualquiera puede fabricar un enlace de login que mande el `insforge_code` a su propio servidor y
+  canjearlo por una sesión con la cuenta de la víctima. Tarea A1.2 del plan.
 - El **nombre visible y el avatar** llegan en `profile.name` y `profile.avatar_url`, así que
   `display_name` se rellena solo la primera vez. Sigue siendo editable por su dueño (RF-1.2).
 - **Cerrar sesión es local.** Salir de ADuo no cierra la sesión de Google en el dispositivo.

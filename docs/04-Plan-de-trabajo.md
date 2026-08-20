@@ -32,7 +32,7 @@ Comprobado el 20 de agosto de 2026 con el MCP de InsForge contra el proyecto rea
 | Proveedores OAuth | `google`, `github` disponibles | RF-1.1 es implementable. |
 | SMTP | **Deshabilitado** | Confirma que no hay correo de recuperación. La decisión de delegar en Google era la correcta. |
 | OAuth de Google | **Ya configurado**, con `use_shared_key: true` y scopes `openid, email, profile` | No hace falta cliente propio de Google Cloud. Se puede entrar hoy. |
-| `allowedRedirectUrls` | **Vacío** | La documentación solo lo exige para los enlaces de correo, no para OAuth. Sin verificar. Tarea A1.2. |
+| `allowedRedirectUrls` | **Vacío**, y vacío significa **permitir todo** | ⚠️ Redirección abierta. No bloquea el login: lo deja demasiado abierto. Tarea A1.2. |
 | `requireEmailVerification` | `true`, con SMTP apagado | ⚠️ Hay que confirmar que no bloquea el alta por OAuth. Tarea A1.3. |
 | Tablas | **Ninguna** | El esquema está por aplicar entero. |
 | Triggers y `SECURITY DEFINER` | Permitidos | La auditoría se implementa como está diseñada. |
@@ -58,10 +58,28 @@ Comprobado el 20 de agosto de 2026 con el MCP de InsForge contra el proyecto rea
       ⚠️ **El precio:** la pantalla de consentimiento de Google mostrará el nombre de la aplicación de
       InsForge, no "ADuo". Para dos personas que viven juntas da igual. Para cualquier cosa pública
       no daría igual.
-- [ ] **A1.2** 🟡 Comprobar si `redirectTo` de `signInWithOAuth` se valida contra
-      `allowedRedirectUrls`. La documentación **solo** exige esa lista para los enlaces de
-      verificación de email y de reseteo de contraseña, que no usamos. Se sabrá en el primer login
-      real: si lo rechaza, se añaden los dos orígenes y listo.
+- [ ] **A1.2** 🔴⚠️ **Rellenar `allowedRedirectUrls` antes de salir a producción.**
+
+      **Lista vacía no significa "bloquea todo": significa "permite todo".** Es una decisión
+      deliberada de InsForge —«for developer convenience»— y su propia documentación la llama
+      insegura fuera de desarrollo local. Verificado contra el servidor el 20 de agosto de 2026:
+      `GET /api/auth/oauth/google` con `redirect_uri=https://ejemplo-atacante.invalido/cb` responde
+      **HTTP 200** y devuelve un `authUrl` válido.
+
+      **Por qué importa, en concreto.** El callback de OAuth entrega el `insforge_code` en el
+      `redirect_uri` que se pidió al empezar. Con la lista vacía, cualquiera puede construir un
+      enlace de login que apunte a **su** servidor y con **su** `code_challenge`. Quien lo pulse se
+      autentica de verdad contra Google, y el código acaba en manos ajenas: como el atacante también
+      tiene el `code_verifier`, lo canjea y **obtiene una sesión con la cuenta de la víctima**. No es
+      teórico, es la razón por la que esa lista existe.
+
+      Qué hay que añadir, con la ruta exacta: el origen de desarrollo, el de producción, y nada más.
+      Se admiten comodines solo en el host (`https://*.dominio.com/callback`) y enlaces profundos
+      (`aduo://auth/callback`) si se listan expresamente.
+
+      💡 Y ese soporte de enlaces profundos es una **posible salida para el riesgo B7.5**: si el
+      redirect en la PWA instalada se va al navegador del sistema, un enlace profundo registrado
+      aquí es la vía para devolver la sesión a la aplicación.
 - [ ] **A1.3** 🟡 Comprobar que `requireEmailVerification: true` **no bloquea el alta por OAuth**.
       Google entrega el email ya verificado, así que no debería. Si bloquea, se desactiva el flag —
       con el SMTP apagado, un usuario atrapado en "sin verificar" no tendría forma de salir.
