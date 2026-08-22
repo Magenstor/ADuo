@@ -59,6 +59,31 @@ son el dominio de ninguno. Vive en `shared` precisamente porque es el contexto c
 convertirlo en un cuarto módulo crearía dependencias de todos hacia él, que es justo lo que las
 fronteras de módulo intentan evitar.
 
+### 2.1 Las rutas se quedan en `src/routes/`
+
+**Decidido el 22 de agosto de 2026.** TanStack Router genera el árbol por ficheros desde
+`src/routes/`, y ahí se quedan. Cada archivo de ruta es una cáscara fina que declara la URL e
+importa el componente del módulo:
+
+```tsx
+// src/routes/listas.tsx
+export const Route = createFileRoute('/listas')({ component: ListasPage })
+```
+
+La lógica, el estado y los componentes viven en `modules/<módulo>/ui/`. **Lo que rompería la
+frontera del módulo es meter lógica de listas en `src/routes/`, no tener ahí un punto de entrada.**
+
+Se valoró la alternativa: `virtualRouteConfig` en `tsr.config.json` con `@tanstack/virtual-file-routes`,
+que permite montar `modules/listas/ui/routes` con el helper `physical()` y conservar el enrutado por
+convención dentro. Técnicamente cuesta un archivo de configuración y funciona.
+
+Se descarta **por ahora** por la misma razón que se descartó Feature-Sliced Design en el apartado
+1.1: con un solo módulo, resuelve un problema que todavía no existe.
+
+**Cuándo reconsiderarlo:** al empezar el módulo 2. Migrar entonces es mover archivos y declarar el
+mount, no reescribir. El riesgo asumido es que migrar veinte rutas cuesta más que montarlo hoy con
+una — se acepta a cambio de no cargar con la indirección durante todo el módulo 1.
+
 ## 3. Las cuatro capas de un módulo
 
 | Capa | Qué contiene | Qué puede importar |
