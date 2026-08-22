@@ -80,8 +80,8 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | 026 | [Crear el proyecto con Vite](026-proyecto-vite.md) | ✅ |
 | 027 | [`.gitignore` y variables de entorno](027-gitignore-env.md) | ✅ |
 | 028 | [Alias `@/` hacia `src/`](028-alias-import.md) | ✅ |
-| 029 | [Tailwind CSS 4](029-tailwind.md) | ☐ |
-| 030 | [Inicializar shadcn/ui](030-shadcn.md) | ☐ |
+| 029 | [Tailwind CSS 4](029-tailwind.md) | ✅ |
+| 030 | [Inicializar shadcn/ui](030-shadcn.md) | ✅ |
 | 031 | [Vitest, Testing Library y jsdom](031-vitest.md) | ☐ |
 | 032 | [Crear el esqueleto de carpetas](032-esqueleto-carpetas.md) | ✅ |
 

@@ -1,8 +1,8 @@
-# 029 — Tailwind CSS 3.4
+# 029 — Tailwind CSS 4
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | ✅ hecha |
 | **Bloque** | Frontend · Andamiaje |
 | **Depende de** | [026](026-proyecto-vite.md) |
 | **Bloquea a** | 030 |
@@ -34,12 +34,29 @@ regenera a la ligera. Un `latest` sin lockfile sí sería una ruleta.
 - [x] Decidir la versión: **Tailwind 4**.
 - [x] Decidir qué hacer con los `latest`: **se quedan**, protegidos por el lockfile.
 - [x] Corregir el apartado 2.5b del stack, que decía lo contrario.
-- [ ] Configurar los estilos base, mobile-first.
+- [x] Configurar los estilos base, mobile-first.
 
 ## Hecho cuando
 
 - Las clases de Tailwind funcionan.
 - La decisión de versión está escrita en el apartado 2.5b del stack, no solo aquí.
+
+## Resultado
+
+Verificado el 22 de agosto de 2026. **La instalación ya venía del andamiaje de la
+[026](026-proyecto-vite.md)**; esta tarea la comprobó y añadió los estilos base con la
+[030](030-shadcn.md).
+
+| Comprobación | Estado |
+|---|---|
+| `tailwindcss` y `@tailwindcss/vite` | 4.1.18 las dos. |
+| Plugin en `vite.config.ts` | `tailwindcss()` declarado. |
+| `@import 'tailwindcss'` en `src/styles.css` | Sí. |
+| `tailwind.config.js` | **No existe, y es lo correcto** en la v4: la configuración es CSS-first. |
+
+Las clases funcionan de verdad, no por lectura de la configuración: un `vite build` con un
+componente real generó `background-color: var(--background)`, `border-color: var(--border)` y
+`outline-color: var(--ring)` en el CSS de salida, que pasó de 5,07 kB a 19,52 kB.
 
 ## Ojo con esto
 
