@@ -82,7 +82,7 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | 028 | [Alias `@/` hacia `src/`](028-alias-import.md) | ✅ |
 | 029 | [Tailwind CSS 4](029-tailwind.md) | ✅ |
 | 030 | [Inicializar shadcn/ui](030-shadcn.md) | ✅ |
-| 031 | [Vitest, Testing Library y jsdom](031-vitest.md) | ☐ |
+| 031 | [Vitest, Testing Library y jsdom](031-vitest.md) | ✅ |
 | 032 | [Crear el esqueleto de carpetas](032-esqueleto-carpetas.md) | ✅ |
 
 ### Frontend · Cliente y sesión
@@ -90,8 +90,8 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | # | Tarea | Estado |
 |---|---|---|
 | 033 | [Cliente de InsForge](033-cliente-insforge.md) | ✅ |
-| 034 | [TanStack Router](034-router.md) | ☐ |
-| 035 | [TanStack Query y TanStack DB](035-query-y-db.md) | ☐ |
+| 034 | [TanStack Router](034-router.md) | ✅ |
+| 035 | [TanStack Query y TanStack DB](035-query-y-db.md) | ✅ |
 | 036 | [Entrar con Google y cerrar sesión](036-login-google.md) | ☐ |
 | 037 | [Comprobar que `requireEmailVerification` no bloquea OAuth](037-verificar-email-flag.md) | ☐ |
 | 038 | [Sesión persistente y rutas protegidas](038-sesion-y-rutas.md) | ☐ |

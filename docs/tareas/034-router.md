@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | ✅ hecha (la navegación queda por comprobar) |
 | **Bloque** | Frontend · Cliente y sesión |
 | **Depende de** | [032](032-esqueleto-carpetas.md) |
 | **Bloquea a** | 038 |
@@ -14,11 +14,41 @@ El árbol de rutas.
 ## Pasos
 
 - [x] Instalar y configurar TanStack Router. Ya vino con el andamiaje ([026](026-proyecto-vite.md)).
-- [ ] Montar el árbol raíz en `src/app/router.tsx`.
+- [x] Montar el árbol raíz en `src/app/router.tsx`.
 
 ## Hecho cuando
 
 - Navegar entre dos rutas funciona.
+
+## Resultado
+
+Hecha el 22 de agosto de 2026.
+
+| Antes | Ahora |
+|---|---|
+| `src/router.tsx` | `src/app/router.tsx` |
+| `src/main.tsx` | `src/app/main.tsx` |
+| `index.html` → `/src/main.tsx` | `index.html` → `/src/app/main.tsx` |
+
+`src/routes/` **no se ha tocado**, según el apartado 2.1 de `../03-Arquitectura.md`.
+
+### Había dos routers, y uno sobraba
+
+Al abrir los archivos apareció algo que la tarea no anticipaba: `router.tsx` exportaba `getRouter()`
+y declaraba el tipo `Register`, **pero nadie lo importaba**. `main.tsx` construía su propio router
+con `createRouter` y declaraba `Register` otra vez.
+
+Dos fuentes de verdad para el mismo árbol, y la que tenía nombre de ser la buena estaba muerta. Ahora
+`main.tsx` consume `getRouter()` y el tipo se declara una sola vez.
+
+Verificado: `vite build` correcto, `tsc --noEmit` limpio y los tests siguen pasando después de mover
+los dos ficheros y reapuntar `index.html`.
+
+### Lo que NO se ha verificado
+
+**Que navegar entre dos rutas funcione**, porque **solo existe una ruta**: `/`. Con un único destino
+no hay navegación que probar. Se cierra en cuanto exista la segunda, que llega con la
+[036](036-login-google.md) o la [048](048-ui-listas.md).
 
 ## Decidido antes de empezar
 
