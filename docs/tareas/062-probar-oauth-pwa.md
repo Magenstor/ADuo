@@ -1,11 +1,11 @@
-# 061 — Probar el redirect de OAuth en la PWA instalada
+# 062 — Probar el redirect de OAuth en la PWA instalada
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · PWA y despliegue |
-| **Depende de** | [025](025-alta-miembros.md), [060](060-cerrar-redirect-urls.md) |
-| **Bloquea a** | 062 |
+| **Depende de** | [025](025-alta-miembros.md), [061](061-cerrar-redirect-urls.md) |
+| **Bloquea a** | 063 |
 
 ## Objetivo
 
@@ -29,4 +29,4 @@ Una PWA en `display: standalone` puede abrir el redirect en el navegador del sis
 sesión allí, fuera de la aplicación. Cruza los dos requisitos que definen el producto: entrar y ser
 una app instalada.
 
-Si falla, la salida probable son los **enlaces profundos** de la tarea 060.
+Si falla, la salida probable son los **enlaces profundos** de la tarea 061.

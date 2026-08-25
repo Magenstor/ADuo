@@ -5,7 +5,7 @@
 | **Estado** | ✅ hecha (falta una comprobación en caliente) |
 | **Bloque** | Frontend · Cliente y sesión |
 | **Depende de** | [003](003-obtener-claves.md), [027](027-gitignore-env.md), [032](032-esqueleto-carpetas.md) |
-| **Bloquea a** | 036, 042 |
+| **Bloquea a** | 036, 043 |
 
 ## Objetivo
 

@@ -63,7 +63,7 @@ Tras cada prueba: 0 filas en todas las tablas y las 8 columnas de auditoria de v
 ## Dos hallazgos del orden de los eventos
 
 **El cascade publica `list.delete` ANTES que `item.delete`.** El cliente recibira primero el borrado
-de la lista y despues el de cada articulo que ya habra quitado. El traductor de la tarea 044 tiene
+de la lista y despues el de cada articulo que ya habra quitado. El traductor de la tarea 045 tiene
 que tolerar un `writeDelete` sobre una clave que ya no existe.
 
 **`actor_id` de `audit_log` es NULLABLE**, y es un cambio deliberado sobre el diseno original.

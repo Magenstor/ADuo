@@ -5,7 +5,7 @@
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Cliente y sesión |
 | **Depende de** | [034](034-router.md), [036](036-login-google.md) |
-| **Bloquea a** | 046 |
+| **Bloquea a** | 039, 047 |
 
 ## Objetivo
 

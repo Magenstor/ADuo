@@ -1,10 +1,10 @@
-# 062 — Usarla una semana haciendo la compra
+# 063 — Usarla una semana haciendo la compra
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · PWA y despliegue |
-| **Depende de** | [061](061-probar-oauth-pwa.md) |
+| **Depende de** | [062](062-probar-oauth-pwa.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

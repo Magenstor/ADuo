@@ -1,10 +1,10 @@
-# 052 — Vaciar los comprados
+# 053 — Vaciar los comprados
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Interfaz |
-| **Depende de** | [049](049-ui-detalle.md) |
+| **Depende de** | [050](050-ui-detalle.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

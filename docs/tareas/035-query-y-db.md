@@ -5,7 +5,7 @@
 | **Estado** | ✅ hecha |
 | **Bloque** | Frontend · Cliente y sesión |
 | **Depende de** | [032](032-esqueleto-carpetas.md) |
-| **Bloquea a** | 043 |
+| **Bloquea a** | 044 |
 
 ## Objetivo
 
@@ -43,7 +43,7 @@ uno: la aplicación parecería funcionar y refetchearía sin parar.
 
 ### `staleTime` se queda con los valores por defecto
 
-**No es un olvido.** Es la decisión de la [043](043-colecciones.md), donde viven las colecciones. Un
+**No es un olvido.** Es la decisión de la [044](044-colecciones.md), donde viven las colecciones. Un
 `staleTime` mal puesto es el fallo descrito en el apartado 2.5 del stack: un refetch que aterriza
 encima de un direct write de tiempo real y **hace reaparecer artículos ya borrados**. Elegirlo aquí,
 sin colecciones a la vista, sería elegirlo a ciegas.

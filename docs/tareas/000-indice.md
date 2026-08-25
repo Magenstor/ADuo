@@ -22,7 +22,7 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | URL del proyecto | `https://rn8y8xbv.eu-central.insforge.app` | Es el `baseUrl` del cliente. |
 | OAuth de Google | **Ya configurado**, `use_shared_key: true`, scopes `openid email profile` | No hace falta cliente propio de Google Cloud. |
 | SMTP | **Deshabilitado** | No hay correo de recuperación. Por eso el acceso se delega en Google. |
-| `allowedRedirectUrls` | `["http://localhost:3000/"]` desde el 25 de agosto de 2026 (tarea 036) | Ya no permite todo: al registrar la primera URL se cerró la redirección abierta. Falta añadir la de producción (tarea 060). |
+| `allowedRedirectUrls` | `["http://localhost:3000/"]` desde el 25 de agosto de 2026 (tarea 036) | Ya no permite todo: al registrar la primera URL se cerró la redirección abierta. Falta añadir la de producción (tarea 061). |
 | `auth.users(id uuid)` | Existe | Las claves ajenas del esquema funcionan tal como están escritas. |
 | `auth.uid()` | Existe | Es la función de usuario autenticado. |
 | Triggers y `SECURITY DEFINER` | Permitidos | La auditoría se implementa como está diseñada. |
@@ -96,54 +96,60 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | 037 | [Comprobar que `requireEmailVerification` no bloquea OAuth](037-verificar-email-flag.md) | ☐ |
 | 038 | [Sesión persistente y rutas protegidas](038-sesion-y-rutas.md) | ☐ |
 
+### Frontend · Esqueleto de interfaz
+
+| # | Tarea | Estado |
+|---|---|---|
+| 039 | [Esqueleto de la interfaz y navegación](039-esqueleto-interfaz.md) | ☐ |
+
 ### Frontend · Dominio
 
 | # | Tarea | Estado |
 |---|---|---|
-| 039 | [`domain/lista.ts`](039-dominio-lista.md) | ☐ |
-| 040 | [`domain/articulo.ts`](040-dominio-articulo.md) | ☐ |
-| 041 | [`domain/busqueda.ts`](041-dominio-busqueda.md) | ☐ |
+| 040 | [`domain/lista.ts`](040-dominio-lista.md) | ☐ |
+| 041 | [`domain/articulo.ts`](041-dominio-articulo.md) | ☐ |
+| 042 | [`domain/busqueda.ts`](042-dominio-busqueda.md) | ☐ |
 
 ### Frontend · Infraestructura
 
 | # | Tarea | Estado |
 |---|---|---|
-| 042 | [Repositorios de listas y artículos](042-repositorios.md) | ☐ |
-| 043 | [Colecciones de TanStack DB y `staleTime`](043-colecciones.md) | ☐ |
-| 044 | [Suscripción y traducción a direct writes](044-realtime-direct-writes.md) | ☐ |
-| 045 | [Reconexión y refetch](045-reconexion.md) | ☐ |
+| 043 | [Repositorios de listas y artículos](043-repositorios.md) | ☐ |
+| 044 | [Colecciones de TanStack DB y `staleTime`](044-colecciones.md) | ☐ |
+| 045 | [Suscripción y traducción a direct writes](045-realtime-direct-writes.md) | ☐ |
+| 046 | [Reconexión y refetch](046-reconexion.md) | ☐ |
 
 ### Frontend · Aplicación
 
 | # | Tarea | Estado |
 |---|---|---|
-| 046 | [`useHogar`](046-use-hogar.md) | ☐ |
-| 047 | [`useListas` y `useArticulos`](047-use-listas-articulos.md) | ☐ |
+| 047 | [`useHogar`](047-use-hogar.md) | ☐ |
+| 048 | [`useListas` y `useArticulos`](048-use-listas-articulos.md) | ☐ |
 
 ### Frontend · Interfaz
 
 | # | Tarea | Estado |
 |---|---|---|
-| 048 | [Listado de listas y crear lista](048-ui-listas.md) | ☐ |
-| 049 | [Detalle de una lista](049-ui-detalle.md) | ☐ |
-| 050 | [Editar y eliminar artículo](050-ui-articulo-editar.md) | ☐ |
-| 051 | [Renombrar y borrar lista](051-ui-lista-editar.md) | ☐ |
-| 052 | [Vaciar los comprados](052-ui-vaciar-comprados.md) | ☐ |
-| 053 | [Buscador dentro de la lista](053-ui-buscador.md) | ☐ |
-| 054 | [Estados vacíos](054-ui-estados-vacios.md) | ☐ |
-| 055 | [Editar el nombre visible propio](055-ui-nombre-visible.md) | ☐ |
-| 056 | [Ergonomía táctil](056-ui-tactil.md) | ☐ |
+| 049 | [Listado de listas y crear lista](049-ui-listas.md) | ☐ |
+| 050 | [Detalle de una lista](050-ui-detalle.md) | ☐ |
+| 051 | [Editar y eliminar artículo](051-ui-articulo-editar.md) | ☐ |
+| 052 | [Renombrar y borrar lista](052-ui-lista-editar.md) | ☐ |
+| 053 | [Vaciar los comprados](053-ui-vaciar-comprados.md) | ☐ |
+| 054 | [Buscador dentro de la lista](054-ui-buscador.md) | ☐ |
+| 055 | [Estados vacíos](055-ui-estados-vacios.md) | ☐ |
+| 056 | [Editar el nombre visible propio](056-ui-nombre-visible.md) | ☐ |
+| 057 | [Ergonomía táctil](057-ui-tactil.md) | ☐ |
 
 ### Frontend · PWA y despliegue
 
 | # | Tarea | Estado |
 |---|---|---|
-| 057 | [PWA: manifest y service worker](057-pwa.md) | ☐ |
-| 058 | [Iconos de la aplicación](058-iconos.md) | ☐ |
-| 059 | [Desplegar y obtener la URL](059-desplegar.md) | ☐ |
-| 060 | [Cerrar la redirección abierta](060-cerrar-redirect-urls.md) | ☐ |
-| 061 | [Probar el redirect de OAuth en la PWA instalada](061-probar-oauth-pwa.md) | ☐ |
-| 062 | [Usarla una semana haciendo la compra](062-usar-de-verdad.md) | ☐ |
+| 058 | [PWA: manifest y service worker](058-pwa.md) | ☐ |
+| 059 | [Iconos de la aplicación](059-iconos.md) | ☐ |
+| 060 | [Desplegar y obtener la URL](060-desplegar.md) | ☐ |
+| 061 | [Cerrar la redirección abierta](061-cerrar-redirect-urls.md) | ☐ |
+| 062 | [Probar el redirect de OAuth en la PWA instalada](062-probar-oauth-pwa.md) | ☐ |
+| 063 | [Usarla una semana haciendo la compra](063-usar-de-verdad.md) | ☐ |
 
 ---
 
@@ -162,12 +168,12 @@ procedimiento completo, con los comandos listos para copiar, está en
 
 ## Los riesgos vivos
 
-1. **[061](061-probar-oauth-pwa.md) — El redirect de OAuth en la PWA instalada.** El mayor del MVP,
+1. **[062](062-probar-oauth-pwa.md) — El redirect de OAuth en la PWA instalada.** El mayor del MVP,
    porque cruza los dos requisitos que definen el producto: entrar y ser una app instalada. Solo se
    detecta en el móvil, con la app instalada.
-2. **[060](060-cerrar-redirect-urls.md) — La redirección abierta.** Así viene el proyecto de fábrica.
+2. **[061](061-cerrar-redirect-urls.md) — La redirección abierta.** Así viene el proyecto de fábrica.
    Permite robar una sesión con un enlace preparado. No bloquea desarrollo; bloquea publicar.
-3. **[043](043-colecciones.md) — Direct writes pisados por el refetch.** Documentado, no un fallo. Si
+3. **[044](044-colecciones.md) — Direct writes pisados por el refetch.** Documentado, no un fallo. Si
    se pasa por alto produce el peor tipo de bug: intermitente y sin patrón.
 4. **[022](022-retencion-mensajes.md) — `realtime.messages` como segunda copia de datos privados.**
 

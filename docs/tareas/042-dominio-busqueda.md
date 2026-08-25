@@ -1,11 +1,11 @@
-# 041 — `domain/busqueda.ts`
+# 042 — `domain/busqueda.ts`
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Dominio |
-| **Depende de** | [039](039-dominio-lista.md) |
-| **Bloquea a** | 053 |
+| **Depende de** | [040](040-dominio-lista.md) |
+| **Bloquea a** | 054 |
 
 ## Objetivo
 

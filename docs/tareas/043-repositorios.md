@@ -1,11 +1,11 @@
-# 042 — Repositorios de listas y artículos
+# 043 — Repositorios de listas y artículos
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Infraestructura |
 | **Depende de** | [032](032-esqueleto-carpetas.md), [033](033-cliente-insforge.md) |
-| **Bloquea a** | 043 |
+| **Bloquea a** | 044 |
 
 ## Objetivo
 

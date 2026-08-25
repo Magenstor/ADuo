@@ -5,7 +5,7 @@
 | **Estado** | ✅ hecha |
 | **Bloque** | Frontend · Andamiaje |
 | **Depende de** | [028](028-alias-import.md) |
-| **Bloquea a** | 033, 039, 042, 046, 048 |
+| **Bloquea a** | 033, 040, 043, 047, 049 |
 
 ## Objetivo
 

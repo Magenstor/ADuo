@@ -1,10 +1,10 @@
-# 055 — Editar el nombre visible propio
+# 056 — Editar el nombre visible propio
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Interfaz |
-| **Depende de** | [046](046-use-hogar.md) |
+| **Depende de** | [047](047-use-hogar.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

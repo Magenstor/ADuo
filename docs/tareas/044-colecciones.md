@@ -1,11 +1,11 @@
-# 043 — Colecciones de TanStack DB y `staleTime`
+# 044 — Colecciones de TanStack DB y `staleTime`
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Infraestructura |
-| **Depende de** | [035](035-query-y-db.md), [042](042-repositorios.md) |
-| **Bloquea a** | 044, 047 |
+| **Depende de** | [035](035-query-y-db.md), [043](043-repositorios.md) |
+| **Bloquea a** | 045, 048 |
 
 ## Objetivo
 

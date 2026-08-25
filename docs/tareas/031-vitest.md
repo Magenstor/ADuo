@@ -5,7 +5,7 @@
 | **Estado** | ✅ hecha |
 | **Bloque** | Frontend · Andamiaje |
 | **Depende de** | [026](026-proyecto-vite.md) |
-| **Bloquea a** | 039 |
+| **Bloquea a** | 040 |
 
 ## Objetivo
 

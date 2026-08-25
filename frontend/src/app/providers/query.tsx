@@ -7,7 +7,7 @@ import type { ReactNode } from 'react'
 export const queryClient = new QueryClient()
 
 // Deliberately left with the library defaults. staleTime in particular is a
-// decision that belongs to task 043, where the collections live: set too high
+// decision that belongs to task 044, where the collections live: set too high
 // it hides real changes, and a refetch landing on top of a realtime direct
 // write is what makes deleted items reappear (section 2.5 of
 // docs/02-Decisiones-tecnicas-stack.md).

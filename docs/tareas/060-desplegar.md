@@ -1,11 +1,11 @@
-# 059 — Desplegar y obtener la URL
+# 060 — Desplegar y obtener la URL
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · PWA y despliegue |
-| **Depende de** | [048](048-ui-listas.md), [049](049-ui-detalle.md), [057](057-pwa.md) |
-| **Bloquea a** | 060 |
+| **Depende de** | [049](049-ui-listas.md), [050](050-ui-detalle.md), [058](058-pwa.md) |
+| **Bloquea a** | 061 |
 
 ## Objetivo
 

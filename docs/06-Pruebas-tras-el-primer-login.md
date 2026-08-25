@@ -212,7 +212,7 @@ for (const ev of ['list.insert','list.update','list.delete',
 Qué hay que anotar:
 
 1. **La forma exacta del payload**, incluido **qué trae `meta`**. De eso depende cómo se escribe el
-   traductor a direct writes de la tarea [044](tareas/044-realtime-direct-writes.md).
+   traductor a direct writes de la tarea [045](tareas/045-realtime-direct-writes.md).
 2. **Que la suscripción ajena se rechace.** Con el token de B, `subscribe('household:<ID_HOGAR_A>')`
    tiene que devolver `ok: false`. Si devuelve `ok: true`, **la política del apartado 5 no está
    filtrando** y cualquiera escucha cualquier hogar.

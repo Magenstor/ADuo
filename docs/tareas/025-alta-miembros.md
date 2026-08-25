@@ -5,7 +5,7 @@
 | **Estado** | ⛔ bloqueada |
 | **Bloque** | Backend · Datos iniciales |
 | **Depende de** | [005](005-tabla-household-members.md), [024](024-crear-hogar.md) |
-| **Bloquea a** | 061 |
+| **Bloquea a** | 062 |
 
 ## Objetivo
 

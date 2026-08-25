@@ -1,10 +1,10 @@
-# 056 — Ergonomía táctil
+# 057 — Ergonomía táctil
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Interfaz |
-| **Depende de** | [049](049-ui-detalle.md) |
+| **Depende de** | [050](050-ui-detalle.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

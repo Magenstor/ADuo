@@ -5,7 +5,7 @@
 | **Estado** | ✅ hecha |
 | **Bloque** | Frontend · Andamiaje |
 | **Depende de** | [028](028-alias-import.md), [029](029-tailwind.md) |
-| **Bloquea a** | 048 |
+| **Bloquea a** | 049 |
 
 ## Objetivo
 
@@ -54,7 +54,7 @@ por un motivo comprobado:
 
 Comprobado con el ejemplo de la propia guía —un `<Button>` dentro de un contenedor
 `flex min-h-svh`—: `tsc` limpio y `vite build` correcto. El archivo de prueba se revirtió, porque
-montar la interfaz es trabajo de la [048](048-ui-listas.md).
+montar la interfaz es trabajo de la [049](049-ui-listas.md).
 
 ## Ojo con esto
 

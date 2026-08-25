@@ -1,11 +1,11 @@
-# 049 — Detalle de una lista
+# 050 — Detalle de una lista
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Interfaz |
-| **Depende de** | [047](047-use-listas-articulos.md), [048](048-ui-listas.md) |
-| **Bloquea a** | 050, 052, 053 |
+| **Depende de** | [048](048-use-listas-articulos.md), [049](049-ui-listas.md) |
+| **Bloquea a** | 051, 053, 054 |
 
 ## Objetivo
 

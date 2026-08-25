@@ -1,11 +1,11 @@
-# 044 — Suscripción y traducción a direct writes
+# 045 — Suscripción y traducción a direct writes
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Infraestructura |
-| **Depende de** | [023](023-capturar-eventos.md), [043](043-colecciones.md) |
-| **Bloquea a** | 045, 047 |
+| **Depende de** | [023](023-capturar-eventos.md), [044](044-colecciones.md) |
+| **Bloquea a** | 046, 048 |
 
 ## Objetivo
 

@@ -1,11 +1,11 @@
-# 039 — `domain/lista.ts`
+# 040 — `domain/lista.ts`
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Dominio |
 | **Depende de** | [031](031-vitest.md), [032](032-esqueleto-carpetas.md) |
-| **Bloquea a** | 047 |
+| **Bloquea a** | 048 |
 
 ## Objetivo
 

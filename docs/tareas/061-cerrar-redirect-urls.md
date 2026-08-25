@@ -1,11 +1,11 @@
-# 060 — Cerrar la redirección abierta
+# 061 — Cerrar la redirección abierta
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · PWA y despliegue |
-| **Depende de** | [059](059-desplegar.md) |
-| **Bloquea a** | 061 |
+| **Depende de** | [060](060-desplegar.md) |
+| **Bloquea a** | 062 |
 
 ## Objetivo
 

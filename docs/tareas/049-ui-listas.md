@@ -1,11 +1,11 @@
-# 048 — Listado de listas y crear lista
+# 049 — Listado de listas y crear lista
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Interfaz |
-| **Depende de** | [030](030-shadcn.md), [032](032-esqueleto-carpetas.md), [047](047-use-listas-articulos.md) |
-| **Bloquea a** | 049 |
+| **Depende de** | [030](030-shadcn.md), [032](032-esqueleto-carpetas.md), [039](039-esqueleto-interfaz.md), [048](048-use-listas-articulos.md) |
+| **Bloquea a** | 050 |
 
 ## Objetivo
 

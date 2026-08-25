@@ -1,10 +1,10 @@
-# 045 — Reconexión y refetch
+# 046 — Reconexión y refetch
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Infraestructura |
-| **Depende de** | [044](044-realtime-direct-writes.md) |
+| **Depende de** | [045](045-realtime-direct-writes.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

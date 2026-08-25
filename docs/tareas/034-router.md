@@ -5,7 +5,7 @@
 | **Estado** | ✅ hecha (la navegación queda por comprobar) |
 | **Bloque** | Frontend · Cliente y sesión |
 | **Depende de** | [032](032-esqueleto-carpetas.md) |
-| **Bloquea a** | 038 |
+| **Bloquea a** | 038, 039 |
 
 ## Objetivo
 
@@ -48,7 +48,7 @@ los dos ficheros y reapuntar `index.html`.
 
 **Que navegar entre dos rutas funcione**, porque **solo existe una ruta**: `/`. Con un único destino
 no hay navegación que probar. Se cierra en cuanto exista la segunda, que llega con la
-[036](036-login-google.md) o la [048](048-ui-listas.md).
+[036](036-login-google.md) o la [049](049-ui-listas.md).
 
 ## Decidido antes de empezar
 

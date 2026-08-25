@@ -1,11 +1,11 @@
-# 047 — `useListas` y `useArticulos`
+# 048 — `useListas` y `useArticulos`
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Aplicación |
-| **Depende de** | [039](039-dominio-lista.md), [040](040-dominio-articulo.md), [043](043-colecciones.md), [044](044-realtime-direct-writes.md), [046](046-use-hogar.md) |
-| **Bloquea a** | 048, 049 |
+| **Depende de** | [040](040-dominio-lista.md), [041](041-dominio-articulo.md), [044](044-colecciones.md), [045](045-realtime-direct-writes.md), [047](047-use-hogar.md) |
+| **Bloquea a** | 049, 050 |
 
 ## Objetivo
 

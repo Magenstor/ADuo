@@ -1,10 +1,10 @@
-# 053 — Buscador dentro de la lista
+# 054 — Buscador dentro de la lista
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Interfaz |
-| **Depende de** | [041](041-dominio-busqueda.md), [049](049-ui-detalle.md) |
+| **Depende de** | [042](042-dominio-busqueda.md), [050](050-ui-detalle.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

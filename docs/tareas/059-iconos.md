@@ -1,10 +1,10 @@
-# 058 — Iconos de la aplicación
+# 059 — Iconos de la aplicación
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · PWA y despliegue |
-| **Depende de** | [057](057-pwa.md) |
+| **Depende de** | [058](058-pwa.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

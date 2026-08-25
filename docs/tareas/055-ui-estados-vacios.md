@@ -1,10 +1,10 @@
-# 054 — Estados vacíos
+# 055 — Estados vacíos
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Interfaz |
-| **Depende de** | [048](048-ui-listas.md) |
+| **Depende de** | [049](049-ui-listas.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

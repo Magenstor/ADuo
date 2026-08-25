@@ -1,11 +1,11 @@
-# 040 — `domain/articulo.ts`
+# 041 — `domain/articulo.ts`
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Dominio |
-| **Depende de** | [039](039-dominio-lista.md) |
-| **Bloquea a** | 047 |
+| **Depende de** | [040](040-dominio-lista.md) |
+| **Bloquea a** | 048 |
 
 ## Objetivo
 

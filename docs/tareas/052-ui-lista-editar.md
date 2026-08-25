@@ -1,10 +1,10 @@
-# 051 — Renombrar y borrar lista
+# 052 — Renombrar y borrar lista
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Interfaz |
-| **Depende de** | [048](048-ui-listas.md) |
+| **Depende de** | [049](049-ui-listas.md) |
 | **Bloquea a** | — |
 
 ## Objetivo

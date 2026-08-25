@@ -1,11 +1,11 @@
-# 046 — `useHogar`
+# 047 — `useHogar`
 
 | | |
 |---|---|
 | **Estado** | pendiente |
 | **Bloque** | Frontend · Aplicación |
 | **Depende de** | [032](032-esqueleto-carpetas.md), [038](038-sesion-y-rutas.md) |
-| **Bloquea a** | 047 |
+| **Bloquea a** | 048 |
 
 ## Objetivo
 
