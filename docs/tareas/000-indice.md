@@ -22,7 +22,7 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | URL del proyecto | `https://rn8y8xbv.eu-central.insforge.app` | Es el `baseUrl` del cliente. |
 | OAuth de Google | **Ya configurado**, `use_shared_key: true`, scopes `openid email profile` | No hace falta cliente propio de Google Cloud. |
 | SMTP | **Deshabilitado** | No hay correo de recuperación. Por eso el acceso se delega en Google. |
-| `allowedRedirectUrls` | **Vacío**, y vacío significa **permitir todo** | ⚠️ Redirección abierta. Hay que cerrarla antes de producción (tarea 060). |
+| `allowedRedirectUrls` | `["http://localhost:3000/"]` desde el 25 de agosto de 2026 (tarea 036) | Ya no permite todo: al registrar la primera URL se cerró la redirección abierta. Falta añadir la de producción (tarea 060). |
 | `auth.users(id uuid)` | Existe | Las claves ajenas del esquema funcionan tal como están escritas. |
 | `auth.uid()` | Existe | Es la función de usuario autenticado. |
 | Triggers y `SECURITY DEFINER` | Permitidos | La auditoría se implementa como está diseñada. |
@@ -92,7 +92,7 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | 033 | [Cliente de InsForge](033-cliente-insforge.md) | ✅ |
 | 034 | [TanStack Router](034-router.md) | ✅ |
 | 035 | [TanStack Query y TanStack DB](035-query-y-db.md) | ✅ |
-| 036 | [Entrar con Google y cerrar sesión](036-login-google.md) | ☐ |
+| 036 | [Entrar con Google y cerrar sesión](036-login-google.md) | ✅ |
 | 037 | [Comprobar que `requireEmailVerification` no bloquea OAuth](037-verificar-email-flag.md) | ☐ |
 | 038 | [Sesión persistente y rutas protegidas](038-sesion-y-rutas.md) | ☐ |
 

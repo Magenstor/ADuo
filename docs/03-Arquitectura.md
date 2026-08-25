@@ -54,6 +54,12 @@ src/
     setup.ts
 ```
 
+**Deuda de documentación (25 de agosto de 2026):** la tarea 036 introdujo `shared/hogar/ui/` para
+la pantalla de acceso, un sublayer con forma de módulo (`domain`/`ui`) dentro de `shared/hogar/`
+que este apartado todavía no describía explícitamente. Se acepta como precedente: `shared/hogar/`
+puede tener su propio `ui/` cuando el estado que renderiza (la sesión) es transversal y no
+pertenece a `modules/`.
+
 **`shared/hogar/` no es un módulo.** Hogar, miembros y sesión los necesitan los tres módulos y no
 son el dominio de ninguno. Vive en `shared` precisamente porque es el contexto compartido, y
 convertirlo en un cuarto módulo crearía dependencias de todos hacia él, que es justo lo que las
