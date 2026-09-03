@@ -94,7 +94,7 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 | 035 | [TanStack Query y TanStack DB](035-query-y-db.md) | ✅ |
 | 036 | [Entrar con Google y cerrar sesión](036-login-google.md) | ✅ |
 | 037 | [Comprobar que `requireEmailVerification` no bloquea OAuth](037-verificar-email-flag.md) | ✅ |
-| 038 | [Sesión persistente y rutas protegidas](038-sesion-y-rutas.md) | ☐ |
+| 038 | [Sesión persistente y rutas protegidas](038-sesion-y-rutas.md) | ✅ |
 
 ### Frontend · Esqueleto de interfaz
 
