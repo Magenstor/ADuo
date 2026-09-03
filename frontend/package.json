@@ -23,6 +23,7 @@
     "@tanstack/query-db-collection": "^1.2.6",
     "@tanstack/react-db": "^0.3.1",
     "@tanstack/react-devtools": "latest",
+    "@tanstack/react-form": "^1.33.5",
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-router": "latest",
     "@tanstack/react-router-devtools": "latest",
@@ -35,7 +36,8 @@
     "react-dom": "^19.2.0",
     "shadcn": "^4.18.0",
     "tailwind-merge": "^3.6.0",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@tanstack/devtools-vite": "latest",
