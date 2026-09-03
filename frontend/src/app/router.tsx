@@ -1,4 +1,5 @@
 import { createRouter as createTanStackRouter } from '@tanstack/react-router'
+import type { RouterHistory } from '@tanstack/react-router'
 import { routeTree } from '@/routeTree.gen'
 
 // The single place the route tree is assembled. main.tsx consumes this; nothing
@@ -7,12 +8,18 @@ import { routeTree } from '@/routeTree.gen'
 //
 // The route files themselves stay in src/routes/ — see section 2.1 of
 // docs/03-Arquitectura.md for why.
-export function getRouter() {
+//
+// `history` is optional so `main.tsx` can keep calling `getRouter()` with no
+// argument — `createTanStackRouter` falls back to `createBrowserHistory()`
+// when it's falsy. Tests pass a `createMemoryHistory()` to exercise the real
+// router config with an in-memory location instead of the browser's.
+export function getRouter(history?: RouterHistory) {
   const router = createTanStackRouter({
     routeTree,
     scrollRestoration: true,
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
+    history,
   })
 
   return router

@@ -4,7 +4,7 @@ import { PantallaAcceso } from '@/shared/hogar/ui/pantalla-acceso'
 import type { EstadoSesion } from '@/shared/hogar/use-sesion'
 
 const { useSesionMock } = vi.hoisted(() => ({ useSesionMock: vi.fn() }))
-vi.mock('@/shared/hogar/use-sesion', () => ({
+vi.mock('@/shared/hogar/sesion-contexto', () => ({
   useSesion: useSesionMock,
 }))
 

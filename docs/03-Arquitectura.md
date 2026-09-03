@@ -54,6 +54,12 @@ src/
     setup.ts
 ```
 
+**`app/providers/` compone, no define.** La línea `providers/` del árbol enumera lo que se monta
+ahí, no lo que se escribe ahí: `QueryClientProvider` viene de `@tanstack/react-query` y
+`app/providers/query.tsx` solo lo compone. La sesión sigue el mismo patrón —`SesionProvider` y
+`useSesion` se definen en `shared/hogar/sesion-contexto.tsx` y se montan en `AppProviders`—,
+porque `app/` es la raíz de composición y nada fuera de `app/` debe importar de `app/`.
+
 **Deuda de documentación (25 de agosto de 2026):** la tarea 036 introdujo `shared/hogar/ui/` para
 la pantalla de acceso, un sublayer con forma de módulo (`domain`/`ui`) dentro de `shared/hogar/`
 que este apartado todavía no describía explícitamente. Se acepta como precedente: `shared/hogar/`

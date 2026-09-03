@@ -13,10 +13,11 @@ export interface EstadoSesion {
   signOut: () => void
 }
 
-// The single hook owning the access screen's session state. No
-// Context/Provider here — task 038 lifts this shape into one without an API
-// change. `loading` means "the session is still being determined".
-export function useSesion(): EstadoSesion {
+// The single hook owning the session state. Provider-internal only: task 038
+// lifts this shape into one Context in `sesion-contexto.tsx`, which is the
+// only runtime importer. `loading` means "the session is still being
+// determined".
+export function useEstadoSesion(): EstadoSesion {
   const [user, setUser] = useState<Usuario | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<ErrorSesion | null>(null)

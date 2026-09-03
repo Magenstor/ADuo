@@ -1,7 +1,7 @@
 import { Alert, AlertDescription } from '@/shared/ui/alert'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Button } from '@/shared/ui/button'
-import { useSesion } from '@/shared/hogar/use-sesion'
+import { useSesion } from '@/shared/hogar/sesion-contexto'
 import type { ErrorSesion } from '@/shared/hogar/sesion'
 
 // English UI copy for each error code the session hook can surface. Kept out

@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import type { UserSchema } from '@insforge/shared-schemas'
-import { useSesion } from '@/shared/hogar/use-sesion'
+import { useEstadoSesion } from '@/shared/hogar/use-sesion'
 
 // This is the repo's first `vi.mock`. It mocks our own `@/shared/api/insforge`
 // boundary rather than the vendor `@insforge/sdk` package: `insforge.ts`
@@ -54,7 +54,7 @@ describe('useSesion — initial load with no pending OAuth code', () => {
   it('resolves to a plain signed-out state', async () => {
     auth.getCurrentUser.mockResolvedValue({ data: { user: null }, error: null })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
 
     await waitFor(() => expect(result.current.loading).toBe(false))
 
@@ -76,7 +76,7 @@ describe('useSesion — initial load with no pending OAuth code', () => {
       error: { message: 'No active session', statusCode: 401 },
     })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
 
     await waitFor(() => expect(result.current.loading).toBe(false))
 
@@ -97,7 +97,7 @@ describe('useSesion — signed-in mount', () => {
       error: null,
     })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
 
     await waitFor(() => expect(result.current.loading).toBe(false))
 
@@ -116,7 +116,7 @@ describe('useSesion — loud failure on OAuth return with no session', () => {
     retornoOAuthMock.traiaCodigo = true
     auth.getCurrentUser.mockResolvedValue({ data: { user: null }, error: null })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
 
     await waitFor(() => expect(result.current.loading).toBe(false))
 
@@ -130,7 +130,7 @@ describe('useSesion — provider denied the request', () => {
     retornoOAuthMock.errorDelProveedor = true
     auth.getCurrentUser.mockResolvedValue({ data: { user: null }, error: null })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
 
     await waitFor(() => expect(result.current.loading).toBe(false))
 
@@ -144,7 +144,7 @@ describe('useSesion — signIn', () => {
     auth.getCurrentUser.mockResolvedValue({ data: { user: null }, error: null })
     auth.signInWithOAuth.mockResolvedValue({ data: {}, error: null })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
     await waitFor(() => expect(result.current.loading).toBe(false))
 
     act(() => {
@@ -164,7 +164,7 @@ describe('useSesion — signIn', () => {
       error: { message: 'oauth denied', statusCode: 400 },
     })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
     await waitFor(() => expect(result.current.loading).toBe(false))
 
     await act(async () => {
@@ -184,7 +184,7 @@ describe('useSesion — signOut', () => {
     })
     auth.signOut.mockResolvedValue({ error: null })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
     await waitFor(() => expect(result.current.user).not.toBeNull())
 
     await act(async () => {
@@ -204,7 +204,7 @@ describe('useSesion — signOut', () => {
       error: { message: 'network error', statusCode: 500 },
     })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
     await waitFor(() => expect(result.current.user).not.toBeNull())
 
     await act(async () => {
@@ -263,7 +263,7 @@ describe('useSesion — onAuthStateChange event handling', () => {
       return Promise.resolve({ error: null })
     })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
     await waitFor(() => expect(result.current.user).not.toBeNull())
 
     await act(async () => {
@@ -300,7 +300,7 @@ describe('useSesion — onAuthStateChange event handling', () => {
       .mockResolvedValueOnce({ data: { user: null }, error: null })
       .mockResolvedValueOnce({ data: { user: unUserSchema() }, error: null })
 
-    const { result } = renderHook(() => useSesion())
+    const { result } = renderHook(() => useEstadoSesion())
     await waitFor(() => expect(result.current.loading).toBe(false))
     expect(result.current.user).toBeNull()
 
@@ -333,7 +333,7 @@ describe('useSesion — unmount safety', () => {
         }),
     )
 
-    const { unmount } = renderHook(() => useSesion())
+    const { unmount } = renderHook(() => useEstadoSesion())
 
     unmount()
 
