@@ -9,6 +9,7 @@
 .github/copilot*
 .kilocode
 .qoder
+.pi
 .qwen
 .roo
 .trae
@@ -25,3 +26,6 @@ dist
 
 # Credenciales de herramientas (contiene la API key de administrador)
 .mcp.json
+.codex/
+# Local Pi runtime state
+.atl/
