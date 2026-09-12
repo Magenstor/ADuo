@@ -106,9 +106,9 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 
 | # | Tarea | Estado |
 |---|---|---|
-| 040 | [`domain/lista.ts`](040-dominio-lista.md) | ☐ |
-| 041 | [`domain/articulo.ts`](041-dominio-articulo.md) | ☐ |
-| 042 | [`domain/busqueda.ts`](042-dominio-busqueda.md) | ☐ |
+| 040 | [`domain/lista.ts`](040-dominio-lista.md) | ☑ |
+| 041 | [`domain/articulo.ts`](041-dominio-articulo.md) | ☑ |
+| 042 | [`domain/busqueda.ts`](042-dominio-busqueda.md) | ☑ |
 
 ### Frontend · Infraestructura
 
