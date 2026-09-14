@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Infraestructura |
 | **Depende de** | [035](035-query-y-db.md), [043](043-repositorios.md) |
 | **Bloquea a** | 045, 048 |
@@ -13,9 +13,9 @@ Las colecciones que sostienen las live queries.
 
 ## Pasos
 
-- [ ] Crear una colección por tabla con `queryCollectionOptions`: `queryKey`, `queryFn`, `queryClient` y `getKey`.
-- [ ] Declarar `onInsert`, `onUpdate` y `onDelete` contra los repositorios.
-- [ ] **Fijar un `staleTime` alto.**
+- [x] Crear una colección por tabla con `queryCollectionOptions`: `queryKey`, `queryFn`, `queryClient` y `getKey`.
+- [x] Declarar `onInsert`, `onUpdate` y `onDelete` contra los repositorios.
+- [x] **Fijar un `staleTime` alto.**
 
 ## Hecho cuando
 

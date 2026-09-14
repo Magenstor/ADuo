@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Infraestructura |
 | **Depende de** | [045](045-realtime-direct-writes.md) |
 | **Bloquea a** | — |
@@ -13,7 +13,7 @@ Recuperarse de una caída del tiempo real.
 
 ## Pasos
 
-- [ ] Refetch de las colecciones al recuperar el foco y al reconectar.
+- [x] Refetch de las colecciones al recuperar el foco y al reconectar.
 
 ## Hecho cuando
 

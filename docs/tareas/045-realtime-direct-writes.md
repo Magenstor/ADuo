@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Infraestructura |
 | **Depende de** | [023](023-capturar-eventos.md), [044](044-colecciones.md) |
 | **Bloquea a** | 046, 048 |
@@ -13,9 +13,9 @@ Aplicar en la colección lo que llega por el canal del hogar.
 
 ## Pasos
 
-- [ ] `insforge.realtime.connect()` y `subscribe('household:<uuid>')`.
-- [ ] Traducir cada evento a `writeInsert`, `writeUpdate` o `writeDelete`, agrupados en `writeBatch`.
-- [ ] Registrar el manejador de `error` del realtime.
+- [x] `insforge.realtime.connect()` y `subscribe('household:<uuid>')`.
+- [x] Traducir cada evento a `writeInsert`, `writeUpdate` o `writeDelete`, agrupados en `writeBatch`.
+- [x] Registrar el manejador de `error` del realtime.
 
 ## Hecho cuando
 

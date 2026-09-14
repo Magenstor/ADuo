@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Infraestructura |
 | **Depende de** | [032](032-esqueleto-carpetas.md), [033](033-cliente-insforge.md) |
 | **Bloquea a** | 044 |
@@ -13,8 +13,8 @@ Hablar con InsForge y devolver tipos de dominio.
 
 ## Pasos
 
-- [ ] Repositorio de listas y repositorio de artículos contra PostgREST.
-- [ ] Traducir la fila del backend al tipo de dominio.
+- [x] Repositorio de listas y repositorio de artículos contra PostgREST.
+- [x] Traducir la fila del backend al tipo de dominio.
 
 ## Hecho cuando
 

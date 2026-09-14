@@ -114,10 +114,10 @@ Comprobado el 20 de agosto de 2026 contra el proyecto real de InsForge.
 
 | # | Tarea | Estado |
 |---|---|---|
-| 043 | [Repositorios de listas y artículos](043-repositorios.md) | ☐ |
-| 044 | [Colecciones de TanStack DB y `staleTime`](044-colecciones.md) | ☐ |
-| 045 | [Suscripción y traducción a direct writes](045-realtime-direct-writes.md) | ☐ |
-| 046 | [Reconexión y refetch](046-reconexion.md) | ☐ |
+| 043 | [Repositorios de listas y artículos](043-repositorios.md) | ☑ |
+| 044 | [Colecciones de TanStack DB y `staleTime`](044-colecciones.md) | ☑ |
+| 045 | [Suscripción y traducción a direct writes](045-realtime-direct-writes.md) | ☑ |
+| 046 | [Reconexión y refetch](046-reconexion.md) | ☑ |
 
 ### Frontend · Aplicación
 

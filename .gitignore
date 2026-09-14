@@ -29,3 +29,6 @@ dist
 .codex/
 # Local Pi runtime state
 .atl/
+
+# Gentle AI SDD runtime instance markers — local ledger binding, never content
+openspec/**/.gentle-ai-instance
