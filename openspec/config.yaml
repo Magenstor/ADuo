@@ -1,0 +1,45 @@
+strict_tdd: true
+context: |
+  ADuo is a TypeScript 6 and React 19 application whose frontend lives in frontend/ and uses Vite 8, TanStack Router, TanStack Query, Tailwind CSS, and InsForge.
+  The codebase is organized by domain module with domain, application, infrastructure, and UI layers. Domain code is pure TypeScript and must not import React or InsForge.
+  The canonical package manager is pnpm. Tests are colocated under frontend/src and run with Vitest in jsdom; domain behavior is tested without rendering or mocks.
+  Current SDD target is the infrastructure slice of tasks 043 through 046, docs/tareas/043-repositorios.md through 046-reconexion.md, planned for frontend/src/modules/listas/infrastructure/. Tasks 040, 041 and 042 established the lista, articulo and busqueda domain conventions this layer must return, and are archived under openspec/changes/archive/2026-09-12-dominio-lista/, -dominio-articulo/ and -dominio-busqueda/.
+rules:
+  proposal:
+    require_problem_statement: true
+    define_scope_and_non_goals: true
+  spec:
+    require_acceptance_criteria: true
+    require_scenarios: true
+  design:
+    require_tradeoffs: true
+    preserve_architecture_boundaries: true
+  tasks:
+    require_red_green_refactor: true
+    protect_review_workload: true
+    review_budget_lines: 400
+    delivery_strategy: "ask-on-risk"
+  apply:
+    require_tests_first: true
+    test_command: "cd frontend && pnpm test"
+  verify:
+    test_command: "cd frontend && pnpm test"
+    typecheck_command: "cd frontend && pnpm exec tsc --noEmit"
+testing:
+  runner:
+    framework: "Vitest 4"
+    command: "cd frontend && pnpm test"
+    config: "frontend/vite.config.ts"
+    environment: "jsdom"
+    setup: "frontend/src/test/setup.ts"
+    include: "frontend/src/**/*.{test,spec}.{ts,tsx}"
+  commands:
+    focused: "cd frontend && pnpm test -- <test-file>"
+    full: "cd frontend && pnpm test"
+    typecheck: "cd frontend && pnpm exec tsc --noEmit"
+  conventions:
+    colocated_tests: true
+    domain_tests_without_rendering_or_mocks: true
+quality:
+  lint: "cd frontend && pnpm lint"
+  format_check: "cd frontend && pnpm check"
