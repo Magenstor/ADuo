@@ -1,5 +1,6 @@
 import { Navigate, Outlet, createFileRoute } from '@tanstack/react-router'
 import { useSesion } from '@/shared/hogar/sesion-contexto'
+import { MarcoApp } from '@/shared/marco/ui/marco-app'
 
 // Pathless layout guard: every route nested under `_privado` renders only
 // for a signed-in visitor. No `loading` check here — `SesionResuelta`
@@ -14,8 +15,12 @@ function PrivadoComponent() {
   const { user } = useSesion()
 
   if (!user) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/entrar" replace />
   }
 
-  return <Outlet />
+  return (
+    <MarcoApp>
+      <Outlet />
+    </MarcoApp>
+  )
 }

@@ -49,6 +49,7 @@ src/
     lib/                    dinero, fechas, utilidades puras
     api/                    cliente InsForge, configuración
     hogar/                  hogar y sesión: transversal por naturaleza
+    marco/                  marco de la zona autenticada: cabecera, navegación, estados
 
   test/
     setup.ts
@@ -65,6 +66,15 @@ la pantalla de acceso, un sublayer con forma de módulo (`domain`/`ui`) dentro d
 que este apartado todavía no describía explícitamente. Se acepta como precedente: `shared/hogar/`
 puede tener su propio `ui/` cuando el estado que renderiza (la sesión) es transversal y no
 pertenece a `modules/`.
+
+**`shared/marco/` (3 de septiembre de 2026).** La tarea 039 añade el marco de la zona
+autenticada —cabecera, navegación y los estados compartidos de carga y de vacío— en
+`shared/marco/ui/`, extendiendo el precedente anterior. No va en `shared/ui/`, que la regla 4.4
+reserva al código que genera la CLI de shadcn; no va en `app/`, porque `routes/_privado.tsx`
+tiene que importarlo y nada fuera de `app/` debe importar de `app/`; y no va en
+`shared/hogar/ui/`, porque la navegación y los estados vacíos no renderizan la sesión, que es
+justo lo que justifica aquel sublayer. `shared/marco/` puede leer de `shared/hogar/`, nunca al
+revés, y no importa de `modules/` (regla 4.3).
 
 **`shared/hogar/` no es un módulo.** Hogar, miembros y sesión los necesitan los tres módulos y no
 son el dominio de ninguno. Vive en `shared` precisamente porque es el contexto compartido, y

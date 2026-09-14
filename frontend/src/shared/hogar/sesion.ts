@@ -1,4 +1,4 @@
-import type { UserSchema } from '@insforge/shared-schemas'
+import type { UserSchema } from '@insforge/sdk'
 
 // The session's view of a signed-in user. Deliberately smaller than
 // `UserSchema`: only what the access screen (and later, task 038's session

@@ -1,6 +1,8 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
-import type { UserSchema } from '@insforge/shared-schemas'
+import type { UserSchema } from '@insforge/sdk'
 import { useEstadoSesion } from '@/shared/hogar/use-sesion'
+
+type AuthStateChangeCallback = (event: string) => void
 
 // This is the repo's first `vi.mock`. It mocks our own `@/shared/api/insforge`
 // boundary rather than the vendor `@insforge/sdk` package: `insforge.ts`
@@ -12,7 +14,9 @@ const { auth } = vi.hoisted(() => ({
     signInWithOAuth: vi.fn(),
     signOut: vi.fn(),
     getCurrentUser: vi.fn(),
-    onAuthStateChange: vi.fn(() => () => {}),
+    onAuthStateChange: vi.fn<(callback: AuthStateChangeCallback) => () => void>(
+      () => () => {},
+    ),
   },
 }))
 vi.mock('@/shared/api/insforge', () => ({ insforge: { auth } }))

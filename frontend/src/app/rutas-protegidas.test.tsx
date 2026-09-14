@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render, within } from '@testing-library/react'
 import { RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 import { AppProviders } from '@/app/providers/query'
 import { getRouter } from '@/app/router'
@@ -41,25 +41,27 @@ function renderizarEn(ruta: string) {
 }
 
 describe('rutas protegidas — visitante sin sesión', () => {
-  it('redirects /app to / and renders the sign-in screen', async () => {
+  it('redirects / to /entrar and renders the sign-in screen', async () => {
     auth.getCurrentUser.mockResolvedValue({ data: { user: null }, error: null })
 
-    const { router, findByRole } = renderizarEn('/app')
+    const { router, findByRole } = renderizarEn('/')
 
     expect(
       await findByRole('button', { name: /sign in with google/i }),
     ).toBeInTheDocument()
-    await vi.waitFor(() => expect(router.state.location.pathname).toBe('/'))
+    await vi.waitFor(() =>
+      expect(router.state.location.pathname).toBe('/entrar'),
+    )
 
     // Proves the guard redirected with `replace`, not `push`. The memory
-    // history starts with a single `/app` entry: a push would leave `/app`
+    // history starts with a single `/` entry: a push would leave `/`
     // behind it and make the back button bounce straight into the guard.
     expect(router.history.canGoBack()).toBe(false)
   })
 })
 
 describe('rutas protegidas — visitante con sesión', () => {
-  it('renders the /app placeholder and does not redirect', async () => {
+  it('renders the / empty state and does not redirect', async () => {
     auth.getCurrentUser.mockResolvedValue({
       data: {
         user: {
@@ -75,18 +77,19 @@ describe('rutas protegidas — visitante con sesión', () => {
       error: null,
     })
 
-    const { router, findByRole } = renderizarEn('/app')
+    const { router, findByRole } = renderizarEn('/')
 
-    expect(await findByRole('heading')).toBeInTheDocument()
-    await vi.waitFor(() => expect(router.state.location.pathname).toBe('/app'))
+    const main = await findByRole('main')
+    expect(await within(main).findByRole('heading')).toBeInTheDocument()
+    await vi.waitFor(() => expect(router.state.location.pathname).toBe('/'))
   })
 })
 
 describe('rutas protegidas — anti-flash mientras la sesión no ha resuelto', () => {
-  it('shows only the status placeholder at / while getCurrentUser never resolves', async () => {
+  it('shows only the status placeholder at /entrar while getCurrentUser never resolves', async () => {
     auth.getCurrentUser.mockImplementation(() => new Promise(() => {}))
 
-    const { findByRole, queryByRole } = renderizarEn('/')
+    const { findByRole, queryByRole } = renderizarEn('/entrar')
 
     expect(await findByRole('status')).toBeInTheDocument()
     expect(
@@ -94,7 +97,7 @@ describe('rutas protegidas — anti-flash mientras la sesión no ha resuelto', (
     ).not.toBeInTheDocument()
   })
 
-  it('shows only the status placeholder at /app, without an early redirect, until the session resolves', async () => {
+  it('shows only the status placeholder at /, without an early redirect, until the session resolves', async () => {
     let resolverSesion: (value: {
       data: { user: unknown }
       error: null
@@ -106,13 +109,13 @@ describe('rutas protegidas — anti-flash mientras la sesión no ha resuelto', (
         }),
     )
 
-    const { router, findByRole, queryByRole } = renderizarEn('/app')
+    const { router, findByRole, queryByRole } = renderizarEn('/')
 
     expect(await findByRole('status')).toBeInTheDocument()
     expect(
       queryByRole('button', { name: /sign in with google/i }),
     ).not.toBeInTheDocument()
-    await vi.waitFor(() => expect(router.state.location.pathname).toBe('/app'))
+    await vi.waitFor(() => expect(router.state.location.pathname).toBe('/'))
 
     resolverSesion({
       data: {
@@ -129,13 +132,18 @@ describe('rutas protegidas — anti-flash mientras la sesión no ha resuelto', (
       error: null,
     })
 
-    // `/app` and `/` both render an `<h1>ADuo</h1>`, so the heading alone
+    // `/entrar` and `/` both render an `<h1>ADuo</h1>`, so the heading alone
     // proves nothing. The absent sign-in button plus the pathname are what
     // distinguish "the guard let us through" from "the guard redirected".
-    expect(await findByRole('heading')).toBeInTheDocument()
+    //
+    // Scoped to `main`: the frame mounted around `<Outlet/>` (task 039) adds
+    // its own `<h1>` in the header, so an unscoped `findByRole('heading')`
+    // now matches two elements.
+    const main = await findByRole('main')
+    expect(await within(main).findByRole('heading')).toBeInTheDocument()
     expect(
       queryByRole('button', { name: /sign in with google/i }),
     ).not.toBeInTheDocument()
-    await vi.waitFor(() => expect(router.state.location.pathname).toBe('/app'))
+    await vi.waitFor(() => expect(router.state.location.pathname).toBe('/'))
   })
 })

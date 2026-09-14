@@ -9,61 +9,54 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as PrivadoRouteImport } from './routes/_privado'
-import { Route as PrivadoAppRouteImport } from './routes/_privado/app'
+import { Route as EntrarRouteImport } from './routes/entrar'
+import { Route as PrivadoIndexRouteImport } from './routes/_privado/index'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PrivadoRoute = PrivadoRouteImport.update({
   id: '/_privado',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivadoAppRoute = PrivadoAppRouteImport.update({
-  id: '/app',
-  path: '/app',
+const EntrarRoute = EntrarRouteImport.update({
+  id: '/entrar',
+  path: '/entrar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivadoIndexRoute = PrivadoIndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => PrivadoRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/app': typeof PrivadoAppRoute
+  '/': typeof PrivadoIndexRoute
+  '/entrar': typeof EntrarRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/app': typeof PrivadoAppRoute
+  '/entrar': typeof EntrarRoute
+  '/': typeof PrivadoIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_privado': typeof PrivadoRouteWithChildren
-  '/_privado/app': typeof PrivadoAppRoute
+  '/entrar': typeof EntrarRoute
+  '/_privado/': typeof PrivadoIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app'
+  fullPaths: '/' | '/entrar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app'
-  id: '__root__' | '/' | '/_privado' | '/_privado/app'
+  to: '/entrar' | '/'
+  id: '__root__' | '/_privado' | '/entrar' | '/_privado/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   PrivadoRoute: typeof PrivadoRouteWithChildren
+  EntrarRoute: typeof EntrarRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_privado': {
       id: '/_privado'
       path: ''
@@ -71,30 +64,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivadoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_privado/app': {
-      id: '/_privado/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof PrivadoAppRouteImport
+    '/entrar': {
+      id: '/entrar'
+      path: '/entrar'
+      fullPath: '/entrar'
+      preLoaderRoute: typeof EntrarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_privado/': {
+      id: '/_privado/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof PrivadoIndexRouteImport
       parentRoute: typeof PrivadoRoute
     }
   }
 }
 
 interface PrivadoRouteChildren {
-  PrivadoAppRoute: typeof PrivadoAppRoute
+  PrivadoIndexRoute: typeof PrivadoIndexRoute
 }
 
 const PrivadoRouteChildren: PrivadoRouteChildren = {
-  PrivadoAppRoute: PrivadoAppRoute,
+  PrivadoIndexRoute: PrivadoIndexRoute,
 }
 
 const PrivadoRouteWithChildren =
   PrivadoRoute._addFileChildren(PrivadoRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   PrivadoRoute: PrivadoRouteWithChildren,
+  EntrarRoute: EntrarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

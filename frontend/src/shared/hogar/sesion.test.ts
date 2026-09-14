@@ -1,4 +1,4 @@
-import type { UserSchema } from '@insforge/shared-schemas'
+import type { UserSchema } from '@insforge/sdk'
 import { aUsuarioDesdeUserSchema, urlDeRetorno } from '@/shared/hogar/sesion'
 
 function unUserSchema(overrides: Partial<UserSchema> = {}): UserSchema {

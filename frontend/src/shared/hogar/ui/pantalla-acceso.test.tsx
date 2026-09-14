@@ -36,6 +36,18 @@ describe('PantallaAcceso — signed out', () => {
 
     expect(signIn).toHaveBeenCalledTimes(1)
   })
+
+  // Structural only (see identidad-usuario.test.tsx) — proves the button
+  // carries the 44px touch-target utility classes, not that it renders at
+  // 44px. Real verification is visual, at 375px width in `pnpm dev`.
+  it('sizes the sign-in button to at least a 44px touch target (structural)', () => {
+    useSesionMock.mockReturnValue(unEstadoSesion())
+
+    render(<PantallaAcceso />)
+
+    const boton = screen.getByRole('button', { name: /sign in with google/i })
+    expect(boton.className).toMatch(/\bmin-h-11\b/)
+  })
 })
 
 describe('PantallaAcceso — signed in', () => {
@@ -61,6 +73,27 @@ describe('PantallaAcceso — signed in', () => {
     await user.click(boton)
 
     expect(signOut).toHaveBeenCalledTimes(1)
+  })
+
+  // Structural only (see identidad-usuario.test.tsx) — proves the button
+  // carries the 44px touch-target utility classes, not that it renders at
+  // 44px. Real verification is visual, at 375px width in `pnpm dev`.
+  it('sizes the sign-out button to at least a 44px touch target (structural)', () => {
+    useSesionMock.mockReturnValue(
+      unEstadoSesion({
+        user: {
+          id: 'user-1',
+          email: 'ana@example.com',
+          nombre: 'Ana',
+          avatarUrl: 'https://example.com/ana.png',
+        },
+      }),
+    )
+
+    render(<PantallaAcceso />)
+
+    const boton = screen.getByRole('button', { name: /sign out/i })
+    expect(boton.className).toMatch(/\bmin-h-11\b/)
   })
 })
 

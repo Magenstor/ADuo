@@ -41,12 +41,21 @@ export function PantallaAcceso() {
             </AvatarFallback>
           </Avatar>
           <p className="font-medium">{user.nombre ?? user.email}</p>
-          <Button variant="outline" onClick={() => signOut()}>
+          {/* min-h-11 (2.75rem = 44px) tops up the default Button height
+              (h-9 = 36px) to the DESIGN.md touch-target minimum — see
+              navegacion-app.tsx for why the shared default is untouched. */}
+          <Button
+            variant="outline"
+            className="min-h-11"
+            onClick={() => signOut()}
+          >
             Sign out
           </Button>
         </div>
       ) : (
-        <Button onClick={() => signIn()}>Sign in with Google</Button>
+        <Button className="min-h-11" onClick={() => signIn()}>
+          Sign in with Google
+        </Button>
       )}
     </div>
   )
