@@ -25,7 +25,7 @@ export function EliminarLista({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button type="button" variant="outline" className="min-h-11">
+        <Button type="button" variant="outline" className="min-h-11 min-w-11">
           Eliminar
         </Button>
       </AlertDialogTrigger>

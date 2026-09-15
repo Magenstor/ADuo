@@ -26,11 +26,12 @@ describe('EliminarLista', () => {
     useArticulos.mockReturnValue({ ready: true, articulos: [] })
   })
 
-  it('renders an Eliminar trigger with a min-h-11 touch target', () => {
+  it('renders an Eliminar trigger with min-h-11 and min-w-11 touch targets', () => {
     render(<EliminarLista lista={lista} eliminar={vi.fn()} />)
 
     const trigger = screen.getByRole('button', { name: /eliminar/i })
     expect(trigger.className).toMatch(/\bmin-h-11\b/)
+    expect(trigger.className).toMatch(/\bmin-w-11\b/)
   })
 
   it('mounts ContenidoEliminarLista only while the dialog is open', async () => {
@@ -58,10 +59,10 @@ describe('EliminarLista', () => {
     expect(botones[botones.length - 1]).toBeDisabled()
   })
 
-  it('keeps the dialog open with an inline alert on an ok:false confirm', async () => {
+  it('keeps the dialog open with a mapped inline alert on an ok:false confirm, never the raw SDK message', async () => {
     const eliminar = vi.fn().mockResolvedValue({
       ok: false,
-      error: Object.assign(new Error('no se pudo eliminar'), {
+      error: Object.assign(new Error('connection reset by peer'), {
         tipo: 'persistence',
       }),
     })
@@ -75,7 +76,12 @@ describe('EliminarLista', () => {
     const botones = screen.getAllByRole('button', { name: /^eliminar$/i })
     await user.click(botones[botones.length - 1])
 
-    expect(await screen.findByText('no se pudo eliminar')).toBeInTheDocument()
+    expect(
+      await screen.findByText(
+        'No se pudo guardar el cambio. Inténtalo de nuevo.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/connection reset/i)).not.toBeInTheDocument()
     expect(
       screen.getByText('Esta lista no tiene artículos.'),
     ).toBeInTheDocument()
