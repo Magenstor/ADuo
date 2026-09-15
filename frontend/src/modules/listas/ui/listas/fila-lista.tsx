@@ -5,6 +5,7 @@ import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import type { Resultado } from '@/modules/listas'
 import type { Lista } from '../../domain/lista'
+import { copiaErrorLista } from './copia-error'
 import { EliminarLista } from './eliminar-lista'
 import { EnlaceLista } from './enlace-lista'
 import { nombreValido } from './validacion'
@@ -64,7 +65,7 @@ export function FilaLista({
       setEditando(false)
       return
     }
-    setErrorFila(resultado.error.message)
+    setErrorFila(copiaErrorLista(resultado.error))
   }
 
   if (!editando) {
@@ -75,7 +76,7 @@ export function FilaLista({
           <Button
             type="button"
             variant="outline"
-            className="min-h-11"
+            className="min-h-11 min-w-11"
             onClick={entrarEdicion}
           >
             Renombrar
@@ -105,7 +106,7 @@ export function FilaLista({
           />
           <Button
             type="submit"
-            className="min-h-11"
+            className="min-h-11 min-w-11"
             disabled={pendiente}
             aria-busy={pendiente}
           >
@@ -114,7 +115,7 @@ export function FilaLista({
           <Button
             type="button"
             variant="outline"
-            className="min-h-11"
+            className="min-h-11 min-w-11"
             onClick={cancelar}
           >
             Cancelar

@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from '@/shared/ui/alert-dialog'
 import type { Lista } from '../../domain/lista'
+import { copiaErrorLista } from './copia-error'
 import { usePendiente } from './pendiente'
 
 function textoConteo(ready: boolean, cantidad: number): string {
@@ -46,7 +47,7 @@ export function ContenidoEliminarLista({
       alCerrar()
       return
     }
-    setError(resultado.error.message)
+    setError(copiaErrorLista(resultado.error))
   }
 
   return (
@@ -67,13 +68,13 @@ export function ContenidoEliminarLista({
         </p>
       )}
       <AlertDialogFooter>
-        <AlertDialogCancel onClick={alCerrar} className="min-h-11">
+        <AlertDialogCancel onClick={alCerrar} className="min-h-11 min-w-11">
           Cancelar
         </AlertDialogCancel>
         <AlertDialogAction
           onClick={confirmar}
           disabled={!articulos.ready || pendiente}
-          className="min-h-11"
+          className="min-h-11 min-w-11"
         >
           Eliminar
         </AlertDialogAction>

@@ -38,7 +38,7 @@ function renderizar(renombrar = vi.fn(), eliminar = vi.fn()) {
 }
 
 describe('FilaLista', () => {
-  it('renders the row link and a Renombrar control with a min-h-11 touch target', async () => {
+  it('renders the row link and a Renombrar control with min-h-11 and min-w-11 touch targets', async () => {
     renderizar()
 
     expect(
@@ -46,6 +46,7 @@ describe('FilaLista', () => {
     ).toHaveAttribute('href', '/listas/lista-1')
     const renombrarBtn = screen.getByRole('button', { name: /renombrar/i })
     expect(renombrarBtn.className).toMatch(/\bmin-h-11\b/)
+    expect(renombrarBtn.className).toMatch(/\bmin-w-11\b/)
   })
 
   it('renders an Eliminar trigger passing the eliminar prop through to the row', async () => {
@@ -56,6 +57,7 @@ describe('FilaLista', () => {
       name: /^eliminar$/i,
     })
     expect(eliminarBtn.className).toMatch(/\bmin-h-11\b/)
+    expect(eliminarBtn.className).toMatch(/\bmin-w-11\b/)
   })
 
   it('swaps the name for a controlled input in edit mode', async () => {
@@ -110,10 +112,13 @@ describe('FilaLista', () => {
     ).toBeInTheDocument()
   })
 
-  it('keeps edit mode, shows the inline alert, and retains the attempted value on ok:false', async () => {
+  it('keeps edit mode, shows the mapped inline alert, and retains the attempted value on ok:false', async () => {
     const renombrar = vi.fn().mockResolvedValue({
       ok: false,
-      error: Object.assign(new Error('nombre inválido'), {
+      // Same domain token `crearLista()` produces for a name over 80
+      // characters — realistic since only blank/whitespace is guarded
+      // client-side.
+      error: Object.assign(new Error('nombre-demasiado-largo'), {
         tipo: 'validation',
       }),
     })
@@ -126,23 +131,50 @@ describe('FilaLista', () => {
     await user.type(input, 'Mensual')
     await user.click(screen.getByRole('button', { name: /guardar/i }))
 
-    expect(await screen.findByText('nombre inválido')).toBeInTheDocument()
+    expect(
+      await screen.findByText('El nombre no puede superar los 80 caracteres.'),
+    ).toBeInTheDocument()
+    expect(screen.queryByText('nombre-demasiado-largo')).not.toBeInTheDocument()
     expect(screen.getByRole('textbox', { name: /nombre/i })).toHaveValue(
       'Mensual',
     )
   })
 
-  it('carries min-h-11 on the Guardar and Cancelar controls', async () => {
+  it('shows a generic retry message, never the raw SDK message, on a persistence rename failure', async () => {
+    const renombrar = vi.fn().mockResolvedValue({
+      ok: false,
+      error: Object.assign(new Error('connection reset by peer'), {
+        tipo: 'persistence',
+      }),
+    })
+    const user = userEvent.setup()
+    renderizar(renombrar)
+
+    await user.click(await screen.findByRole('button', { name: /renombrar/i }))
+    const input = screen.getByRole('textbox', { name: /nombre/i })
+    await user.clear(input)
+    await user.type(input, 'Mensual')
+    await user.click(screen.getByRole('button', { name: /guardar/i }))
+
+    expect(
+      await screen.findByText(
+        'No se pudo guardar el cambio. Inténtalo de nuevo.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/connection reset/i)).not.toBeInTheDocument()
+  })
+
+  it('carries min-h-11 and min-w-11 on the Guardar and Cancelar controls', async () => {
     const user = userEvent.setup()
     renderizar()
 
     await user.click(await screen.findByRole('button', { name: /renombrar/i }))
 
-    expect(screen.getByRole('button', { name: /guardar/i }).className).toMatch(
-      /\bmin-h-11\b/,
-    )
-    expect(screen.getByRole('button', { name: /cancelar/i }).className).toMatch(
-      /\bmin-h-11\b/,
-    )
+    const guardar = screen.getByRole('button', { name: /guardar/i })
+    const cancelar = screen.getByRole('button', { name: /cancelar/i })
+    expect(guardar.className).toMatch(/\bmin-h-11\b/)
+    expect(guardar.className).toMatch(/\bmin-w-11\b/)
+    expect(cancelar.className).toMatch(/\bmin-h-11\b/)
+    expect(cancelar.className).toMatch(/\bmin-w-11\b/)
   })
 })

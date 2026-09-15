@@ -101,11 +101,11 @@ describe('ContenidoEliminarLista', () => {
     expect(alCerrar).toHaveBeenCalledTimes(1)
   })
 
-  it('keeps the dialog open and shows an inline alert on ok:false, without calling alCerrar', async () => {
+  it('keeps the dialog open and shows a mapped inline alert on ok:false, without calling alCerrar', async () => {
     useArticulos.mockReturnValue({ ready: true, articulos: [] })
     const eliminar = vi.fn().mockResolvedValue({
       ok: false,
-      error: Object.assign(new Error('no se pudo eliminar'), {
+      error: Object.assign(new Error('connection reset by peer'), {
         tipo: 'persistence',
       }),
     })
@@ -115,7 +115,12 @@ describe('ContenidoEliminarLista', () => {
 
     await user.click(screen.getByRole('button', { name: /eliminar/i }))
 
-    expect(await screen.findByText('no se pudo eliminar')).toBeInTheDocument()
+    expect(
+      await screen.findByText(
+        'No se pudo guardar el cambio. Inténtalo de nuevo.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/connection reset/i)).not.toBeInTheDocument()
     expect(alCerrar).not.toHaveBeenCalled()
   })
 
@@ -126,15 +131,15 @@ describe('ContenidoEliminarLista', () => {
     expect(screen.getByRole('button', { name: /eliminar/i })).toBeDisabled()
   })
 
-  it('carries min-h-11 on the confirm and cancel controls', () => {
+  it('carries min-h-11 and min-w-11 on the confirm and cancel controls', () => {
     useArticulos.mockReturnValue({ ready: true, articulos: [] })
     renderizar()
 
-    expect(screen.getByRole('button', { name: /eliminar/i }).className).toMatch(
-      /\bmin-h-11\b/,
-    )
-    expect(screen.getByRole('button', { name: /cancelar/i }).className).toMatch(
-      /\bmin-h-11\b/,
-    )
+    const eliminar = screen.getByRole('button', { name: /eliminar/i })
+    const cancelar = screen.getByRole('button', { name: /cancelar/i })
+    expect(eliminar.className).toMatch(/\bmin-h-11\b/)
+    expect(eliminar.className).toMatch(/\bmin-w-11\b/)
+    expect(cancelar.className).toMatch(/\bmin-h-11\b/)
+    expect(cancelar.className).toMatch(/\bmin-w-11\b/)
   })
 })
