@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PrivadoRouteImport } from './routes/_privado'
 import { Route as EntrarRouteImport } from './routes/entrar'
 import { Route as PrivadoIndexRouteImport } from './routes/_privado/index'
+import { Route as PrivadoListasListaIdRouteImport } from './routes/_privado/listas.$listaId'
 
 const PrivadoRoute = PrivadoRouteImport.update({
   id: '/_privado',
@@ -27,27 +28,40 @@ const PrivadoIndexRoute = PrivadoIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PrivadoRoute,
 } as any)
+const PrivadoListasListaIdRoute = PrivadoListasListaIdRouteImport.update({
+  id: '/listas/$listaId',
+  path: '/listas/$listaId',
+  getParentRoute: () => PrivadoRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PrivadoIndexRoute
   '/entrar': typeof EntrarRoute
+  '/listas/$listaId': typeof PrivadoListasListaIdRoute
 }
 export interface FileRoutesByTo {
   '/entrar': typeof EntrarRoute
   '/': typeof PrivadoIndexRoute
+  '/listas/$listaId': typeof PrivadoListasListaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_privado': typeof PrivadoRouteWithChildren
   '/entrar': typeof EntrarRoute
   '/_privado/': typeof PrivadoIndexRoute
+  '/_privado/listas/$listaId': typeof PrivadoListasListaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/entrar'
+  fullPaths: '/' | '/entrar' | '/listas/$listaId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/entrar' | '/'
-  id: '__root__' | '/_privado' | '/entrar' | '/_privado/'
+  to: '/entrar' | '/' | '/listas/$listaId'
+  id:
+    | '__root__'
+    | '/_privado'
+    | '/entrar'
+    | '/_privado/'
+    | '/_privado/listas/$listaId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,15 +92,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivadoIndexRouteImport
       parentRoute: typeof PrivadoRoute
     }
+    '/_privado/listas/$listaId': {
+      id: '/_privado/listas/$listaId'
+      path: '/listas/$listaId'
+      fullPath: '/listas/$listaId'
+      preLoaderRoute: typeof PrivadoListasListaIdRouteImport
+      parentRoute: typeof PrivadoRoute
+    }
   }
 }
 
 interface PrivadoRouteChildren {
   PrivadoIndexRoute: typeof PrivadoIndexRoute
+  PrivadoListasListaIdRoute: typeof PrivadoListasListaIdRoute
 }
 
 const PrivadoRouteChildren: PrivadoRouteChildren = {
   PrivadoIndexRoute: PrivadoIndexRoute,
+  PrivadoListasListaIdRoute: PrivadoListasListaIdRoute,
 }
 
 const PrivadoRouteWithChildren =
