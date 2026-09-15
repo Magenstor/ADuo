@@ -4,6 +4,7 @@ import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import type { Resultado } from '@/modules/listas'
+import { copiaErrorLista } from './copia-error'
 import { nombreValido } from './validacion'
 
 // Reusable create-list form (design D4): one component, rendered as
@@ -38,7 +39,7 @@ export function CrearLista({
       inputRef.current?.focus()
       return
     }
-    setError(resultado.error.message)
+    setError(copiaErrorLista(resultado.error))
   }
 
   return (
@@ -56,7 +57,7 @@ export function CrearLista({
         />
         <Button
           type="submit"
-          className="min-h-11"
+          className="min-h-11 min-w-11"
           disabled={pendiente}
           aria-busy={pendiente}
         >

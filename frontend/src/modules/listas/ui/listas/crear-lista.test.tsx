@@ -72,7 +72,10 @@ describe('CrearLista', () => {
   it('shows the inline error and keeps the typed name on ok:false', async () => {
     const crear = vi.fn().mockResolvedValue({
       ok: false,
-      error: Object.assign(new Error('nombre inválido'), {
+      // `crearLista()` (domain/lista.ts) rejects a name over 80 characters
+      // with this exact token via `fallo('validation', ...)` — this is the
+      // realistic path, since only blank/whitespace is guarded client-side.
+      error: Object.assign(new Error('nombre-demasiado-largo'), {
         tipo: 'validation',
       }),
     })
@@ -83,15 +86,41 @@ describe('CrearLista', () => {
     await user.type(input, 'Semanal')
     await user.click(screen.getByRole('button', { name: /crear/i }))
 
-    expect(await screen.findByText('nombre inválido')).toBeInTheDocument()
+    // Never the raw domain token — the mapped Spanish copy instead.
+    expect(
+      await screen.findByText('El nombre no puede superar los 80 caracteres.'),
+    ).toBeInTheDocument()
+    expect(screen.queryByText('nombre-demasiado-largo')).not.toBeInTheDocument()
     expect(input).toHaveValue('Semanal')
   })
 
-  it('carries the min-h-11 touch-target class on the submit control', () => {
+  it('shows a generic retry message, never the raw SDK message, on a persistence error', async () => {
+    const crear = vi.fn().mockResolvedValue({
+      ok: false,
+      error: Object.assign(
+        new Error('duplicate key value violates unique constraint'),
+        { tipo: 'persistence' },
+      ),
+    })
+    const user = userEvent.setup()
+    render(<CrearLista crear={crear} />)
+
+    await user.type(screen.getByRole('textbox', { name: /nombre/i }), 'Semanal')
+    await user.click(screen.getByRole('button', { name: /crear/i }))
+
+    expect(
+      await screen.findByText(
+        'No se pudo guardar el cambio. Inténtalo de nuevo.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/duplicate key value/i)).not.toBeInTheDocument()
+  })
+
+  it('carries the min-h-11 and min-w-11 touch-target classes on the submit control', () => {
     render(<CrearLista crear={vi.fn()} />)
 
-    expect(screen.getByRole('button', { name: /crear/i }).className).toMatch(
-      /\bmin-h-11\b/,
-    )
+    const boton = screen.getByRole('button', { name: /crear/i })
+    expect(boton.className).toMatch(/\bmin-h-11\b/)
+    expect(boton.className).toMatch(/\bmin-w-11\b/)
   })
 })
