@@ -121,26 +121,21 @@ describe('MarcoApp — visitante con sesión', () => {
     ).toBeEnabled()
   })
 
-  // C2 (verify report #446): pins the actual empty-state content, not just a
-  // heading count — the prior assertion above passes for either the old
-  // `AppPlaceholder` or `EstadoVacio`, so it cannot detect the Phase 4 swap.
-  it('renders the empty-state título and descripción inside <main>, with no list markup', async () => {
+  // C2 (verify report #446, amended by ui-listas Group A — Engram #546):
+  // originally pinned the placeholder `EstadoVacio` copy. Under this file's
+  // `auth`-only mock (no household mock registered here), `useHogar()`
+  // resolves `error` once the real `PantallaListas` is wired in, so the
+  // screen correctly renders the household-error banner (state 3) — not
+  // the old placeholder, and not the two-heading empty-list state (that
+  // shape is covered by `pantalla-listas.test.tsx`'s mocked-hooks suite).
+  it('renders a household-error banner inside <main>, with a single heading and no list markup', async () => {
     mockUsuarioFirmado()
 
     const { findByRole } = renderizarEn('/')
 
     const main = await findByRole('main')
-    expect(
-      await within(main).findByRole('heading', {
-        level: 2,
-        name: 'Todavía no tienes listas',
-      }),
-    ).toBeInTheDocument()
-    expect(
-      within(main).getByText(
-        'Crea tu primera lista para compartirla con tu hogar.',
-      ),
-    ).toBeInTheDocument()
+    expect(await within(main).findByRole('alert')).toBeInTheDocument()
+    expect(await within(main).findAllByRole('heading')).toHaveLength(1)
     expect(within(main).queryAllByRole('listitem')).toHaveLength(0)
   })
 })
