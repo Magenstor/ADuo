@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 import { SesionProvider } from '@/shared/hogar/sesion-contexto'
+import { HogarProvider } from '@/shared/hogar/hogar-contexto'
+import { HogarListas } from '@/modules/listas/application/hogar-listas'
 
 // One QueryClient for the whole application. Creating it outside the component
 // matters: built inside, every re-render would produce a new client and throw
@@ -19,7 +21,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
       {/* Inside QueryClientProvider: task 047's use-hogar will query keyed
           by the signed-in user, so the query cache must outlive the session
           boundary, not the other way around. */}
-      <SesionProvider>{children}</SesionProvider>
+      <SesionProvider>
+        <HogarProvider recurso={HogarListas}>{children}</HogarProvider>
+      </SesionProvider>
     </QueryClientProvider>
   )
 }
