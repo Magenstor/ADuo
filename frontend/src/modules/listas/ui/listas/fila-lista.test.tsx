@@ -21,10 +21,12 @@ const lista: Lista = {
 
 // FilaLista composes EnlaceLista (a `Link`), so it needs the same hand-built
 // router harness (copied per-file, per `marco-app-persistencia.test.tsx:54-80`).
-function renderizar(renombrar = vi.fn()) {
+function renderizar(renombrar = vi.fn(), eliminar = vi.fn()) {
   const rootRoute = createRootRoute({
     component: () => (
-      <ul>{<FilaLista lista={lista} renombrar={renombrar} />}</ul>
+      <ul>
+        {<FilaLista lista={lista} renombrar={renombrar} eliminar={eliminar} />}
+      </ul>
     ),
   })
   const router = createRouter({
@@ -44,6 +46,16 @@ describe('FilaLista', () => {
     ).toHaveAttribute('href', '/listas/lista-1')
     const renombrarBtn = screen.getByRole('button', { name: /renombrar/i })
     expect(renombrarBtn.className).toMatch(/\bmin-h-11\b/)
+  })
+
+  it('renders an Eliminar trigger passing the eliminar prop through to the row', async () => {
+    const eliminar = vi.fn()
+    renderizar(vi.fn(), eliminar)
+
+    const eliminarBtn = await screen.findByRole('button', {
+      name: /^eliminar$/i,
+    })
+    expect(eliminarBtn.className).toMatch(/\bmin-h-11\b/)
   })
 
   it('swaps the name for a controlled input in edit mode', async () => {

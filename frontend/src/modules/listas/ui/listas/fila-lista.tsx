@@ -5,6 +5,7 @@ import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import type { Resultado } from '@/modules/listas'
 import type { Lista } from '../../domain/lista'
+import { EliminarLista } from './eliminar-lista'
 import { EnlaceLista } from './enlace-lista'
 import { nombreValido } from './validacion'
 import { usePendiente } from './pendiente'
@@ -17,9 +18,11 @@ import { usePendiente } from './pendiente'
 export function FilaLista({
   lista,
   renombrar,
+  eliminar,
 }: {
   lista: Lista
   renombrar: (id: string, nombre: string) => Promise<Resultado<void>>
+  eliminar: (id: string) => Promise<Resultado<void>>
 }) {
   const inputId = useId()
   const errorId = useId()
@@ -68,14 +71,17 @@ export function FilaLista({
     return (
       <li className="flex items-center justify-between gap-2">
         <EnlaceLista lista={lista} />
-        <Button
-          type="button"
-          variant="outline"
-          className="min-h-11"
-          onClick={entrarEdicion}
-        >
-          Renombrar
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-11"
+            onClick={entrarEdicion}
+          >
+            Renombrar
+          </Button>
+          <EliminarLista lista={lista} eliminar={eliminar} />
+        </div>
       </li>
     )
   }
