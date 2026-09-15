@@ -7,6 +7,7 @@ import type { Resultado } from '@/modules/listas'
 import type { Lista } from '../../domain/lista'
 import { EnlaceLista } from './enlace-lista'
 import { nombreValido } from './validacion'
+import { usePendiente } from './pendiente'
 
 // Row: view mode composes `EnlaceLista`; edit mode is a local form (design
 // D3). All rename state (`editando`/`borrador`/`pendiente`/`errorFila`) is
@@ -24,7 +25,7 @@ export function FilaLista({
   const errorId = useId()
   const [editando, setEditando] = useState(false)
   const [borrador, setBorrador] = useState(lista.nombre)
-  const [pendiente, setPendiente] = useState(false)
+  const { pendiente, ejecutar } = usePendiente()
   const [errorFila, setErrorFila] = useState<string>()
 
   function entrarEdicion() {
@@ -55,9 +56,7 @@ export function FilaLista({
       return
     }
     setErrorFila(undefined)
-    setPendiente(true)
-    const resultado = await renombrar(lista.id, normalizado)
-    setPendiente(false)
+    const resultado = await ejecutar(() => renombrar(lista.id, normalizado))
     if (resultado.ok) {
       setEditando(false)
       return

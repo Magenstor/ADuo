@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from '@/shared/ui/alert-dialog'
 import type { Lista } from '../../domain/lista'
+import { usePendiente } from './pendiente'
 
 function textoConteo(ready: boolean, cantidad: number): string {
   if (!ready) return 'Contando artículos…'
@@ -35,14 +36,12 @@ export function ContenidoEliminarLista({
   alCerrar: () => void
 }) {
   const articulos = useArticulos(lista.id)
-  const [pendiente, setPendiente] = useState(false)
+  const { pendiente, ejecutar } = usePendiente()
   const [error, setError] = useState<string>()
 
   async function confirmar(evento: MouseEvent) {
     evento.preventDefault()
-    setPendiente(true)
-    const resultado = await eliminar(lista.id)
-    setPendiente(false)
+    const resultado = await ejecutar(() => eliminar(lista.id))
     if (resultado.ok) {
       alCerrar()
       return

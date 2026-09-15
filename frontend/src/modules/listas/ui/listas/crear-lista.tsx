@@ -6,6 +6,7 @@ import { Label } from '@/shared/ui/label'
 import type { Resultado } from '@/modules/listas'
 import { copiaErrorLista } from './copia-error'
 import { nombreValido } from './validacion'
+import { usePendiente } from './pendiente'
 
 // Reusable create-list form (design D4): one component, rendered as
 // `EstadoVacio`'s `children` when the household has no lists yet, and above
@@ -20,7 +21,7 @@ export function CrearLista({
   const errorId = useId()
   const inputRef = useRef<HTMLInputElement>(null)
   const [nombre, setNombre] = useState('')
-  const [pendiente, setPendiente] = useState(false)
+  const { pendiente, ejecutar } = usePendiente()
   const [error, setError] = useState<string>()
 
   async function enviar(evento: FormEvent<HTMLFormElement>) {
@@ -31,9 +32,7 @@ export function CrearLista({
       return
     }
     setError(undefined)
-    setPendiente(true)
-    const resultado = await crear(normalizado)
-    setPendiente(false)
+    const resultado = await ejecutar(() => crear(normalizado))
     if (resultado.ok) {
       setNombre('')
       inputRef.current?.focus()
