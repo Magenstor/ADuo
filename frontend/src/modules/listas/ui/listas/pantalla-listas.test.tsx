@@ -289,7 +289,7 @@ describe('PantallaListas', () => {
     useHogar.mockReturnValue(hogarReady(2))
     const renombrar = vi.fn().mockResolvedValue({
       ok: false,
-      error: Object.assign(new Error('no se pudo renombrar'), {
+      error: Object.assign(new Error('connection reset by peer'), {
         tipo: 'persistence',
       }),
     })
@@ -308,7 +308,12 @@ describe('PantallaListas', () => {
     await user.type(entradaFila, 'Nueva')
     await user.click(screen.getByRole('button', { name: /guardar/i }))
 
-    expect(await screen.findByText('no se pudo renombrar')).toBeInTheDocument()
+    expect(
+      await screen.findByText(
+        'No se pudo guardar el cambio. Inténtalo de nuevo.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/connection reset/i)).not.toBeInTheDocument()
     expect(
       screen.getByRole('heading', { level: 2, name: 'Listas' }),
     ).toBeInTheDocument()
