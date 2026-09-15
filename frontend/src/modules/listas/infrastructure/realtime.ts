@@ -23,7 +23,20 @@ export type FalloRealtime =
   | { tipo: 'mensaje-ilegible'; evento: string; causa: string }
   | { tipo: 'evento-desconocido'; evento: string }
 
-export type SuscripcionHogar = { detener: () => void }
+export type SuscripcionHogar = { detener: () => Promise<void> }
+
+// A shared socket needs ordered channel transitions: a late old-generation
+// unsubscribe must finish before a new generation subscribes to that channel.
+let colaDeSuscripciones: Promise<void> = Promise.resolve()
+
+function encolar<T>(operacion: () => Promise<T>): Promise<T> {
+  const siguiente = colaDeSuscripciones.then(operacion, operacion)
+  colaDeSuscripciones = siguiente.then(
+    () => undefined,
+    () => undefined,
+  )
+  return siguiente
+}
 
 // One named predicate confines the internal, publicly-typed-but-not-publicly-
 // contracted read (design D2). `_state` and `syncedData` are both declared
@@ -35,6 +48,35 @@ export function estaSincronizado<T extends object>(
   clave: string,
 ): boolean {
   return coleccion._state.syncedData.has(clave)
+}
+
+// Reads `meta.channel` without trusting the SDK's static shape: an envelope
+// with a missing or null `meta` must reach `filaDesdeMensaje`, whose guard
+// reports and drops it, instead of throwing here outside every `try`.
+function canalDelMensaje(mensaje: unknown): string | undefined {
+  if (typeof mensaje !== 'object' || mensaje === null || !('meta' in mensaje))
+    return undefined
+  const meta: unknown = mensaje.meta
+  if (typeof meta !== 'object' || meta === null || !('channel' in meta))
+    return undefined
+  return typeof meta.channel === 'string' ? meta.channel : undefined
+}
+
+// Two gates in front of every translator: the household channel, and the
+// owner's scope. Once the owner aborts its signal the scope is retired, so an
+// event arriving between that abort and `detener()` must not touch resources
+// the owner may already be cleaning up.
+function soloCanal(
+  canal: string,
+  signal: AbortSignal | undefined,
+  manejador: (mensaje: SocketMessage) => void,
+) {
+  return (mensaje: SocketMessage) => {
+    if (signal?.aborted) return
+    const canalMensaje = canalDelMensaje(mensaje)
+    if (canalMensaje !== undefined && canalMensaje !== canal) return
+    manejador(mensaje)
+  }
 }
 
 function causaComoTexto(causa: unknown): string {
@@ -196,11 +238,9 @@ export async function iniciarSuscripcionHogar(
   householdId: string,
   colecciones: ColeccionesRealtime,
   alReportar: (fallo: FalloRealtime) => void = console.error,
+  signal?: AbortSignal,
 ): Promise<SuscripcionHogar> {
-  await insforge.realtime.connect()
   const canal = `household:${householdId}`
-  await insforge.realtime.subscribe(canal)
-
   const manejadorListaInsert = crearManejadorEscritura(
     colecciones.listas,
     'list.insert',
@@ -238,32 +278,60 @@ export async function iniciarSuscripcionHogar(
   )
   const manejadorError = (error: RealtimeErrorPayload) =>
     alReportar({ tipo: 'socket', causa: error })
+  const manejadores = {
+    listaInsert: soloCanal(canal, signal, manejadorListaInsert),
+    listaUpdate: soloCanal(canal, signal, manejadorListaUpdate),
+    listaDelete: soloCanal(canal, signal, manejadorListaDelete),
+    articuloInsert: soloCanal(canal, signal, manejadorArticuloInsert),
+    articuloUpdate: soloCanal(canal, signal, manejadorArticuloUpdate),
+    articuloDelete: soloCanal(canal, signal, manejadorArticuloDelete),
+  }
+  const quitarManejadores = () => {
+    insforge.realtime.off('list.insert', manejadores.listaInsert)
+    insforge.realtime.off('list.update', manejadores.listaUpdate)
+    insforge.realtime.off('list.delete', manejadores.listaDelete)
+    insforge.realtime.off('item.insert', manejadores.articuloInsert)
+    insforge.realtime.off('item.update', manejadores.articuloUpdate)
+    insforge.realtime.off('item.delete', manejadores.articuloDelete)
+    insforge.realtime.off('error', manejadorError)
+    insforge.realtime.off('connect_error', manejadorError)
+  }
 
-  insforge.realtime.on('list.insert', manejadorListaInsert)
-  insforge.realtime.on('list.update', manejadorListaUpdate)
-  insforge.realtime.on('list.delete', manejadorListaDelete)
-  insforge.realtime.on('item.insert', manejadorArticuloInsert)
-  insforge.realtime.on('item.update', manejadorArticuloUpdate)
-  insforge.realtime.on('item.delete', manejadorArticuloDelete)
+  // Register before connect so no event can race successful subscription setup.
+  insforge.realtime.on('list.insert', manejadores.listaInsert)
+  insforge.realtime.on('list.update', manejadores.listaUpdate)
+  insforge.realtime.on('list.delete', manejadores.listaDelete)
+  insforge.realtime.on('item.insert', manejadores.articuloInsert)
+  insforge.realtime.on('item.update', manejadores.articuloUpdate)
+  insforge.realtime.on('item.delete', manejadores.articuloDelete)
   insforge.realtime.on('error', manejadorError)
+  insforge.realtime.on('connect_error', manejadorError)
+
+  try {
+    await encolar(async () => {
+      if (signal?.aborted)
+        throw new DOMException('Subscription aborted', 'AbortError')
+      await insforge.realtime.connect()
+      if (signal?.aborted)
+        throw new DOMException('Subscription aborted', 'AbortError')
+      const resultado = await insforge.realtime.subscribe(canal)
+      if (!resultado.ok) throw new Error(resultado.error.message)
+    })
+  } catch (causa) {
+    quitarManejadores()
+    alReportar({ tipo: 'socket', causa })
+    throw causa
+  }
 
   let detenido = false
-
   return {
-    detener: () => {
-      if (detenido) {
-        return
-      }
+    detener: async () => {
+      if (detenido) return
       detenido = true
-
-      insforge.realtime.off('list.insert', manejadorListaInsert)
-      insforge.realtime.off('list.update', manejadorListaUpdate)
-      insforge.realtime.off('list.delete', manejadorListaDelete)
-      insforge.realtime.off('item.insert', manejadorArticuloInsert)
-      insforge.realtime.off('item.update', manejadorArticuloUpdate)
-      insforge.realtime.off('item.delete', manejadorArticuloDelete)
-      insforge.realtime.off('error', manejadorError)
-      insforge.realtime.unsubscribe(canal)
+      quitarManejadores()
+      await encolar(async () => {
+        await insforge.realtime.unsubscribe(canal)
+      })
     },
   }
 }

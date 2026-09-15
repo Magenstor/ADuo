@@ -460,20 +460,20 @@ describe('iniciarSuscripcionHogar — detener() teardown contract', () => {
       alReportar,
     )
 
-    detener()
+    await detener()
 
     emitirEvento(
       'list.insert',
       unMensaje(filaListaCruda({ id: 'lista-tras-detener' })),
     )
     expect(colecciones.listas.get('lista-tras-detener')).toBeUndefined()
-    expect(realtime.off).toHaveBeenCalledTimes(7)
+    expect(realtime.off).toHaveBeenCalledTimes(8)
     expect(realtime.unsubscribe).toHaveBeenCalledTimes(1)
     expect(realtime.unsubscribe).toHaveBeenCalledWith('household:hogar-1')
     expect(realtime.disconnect).not.toHaveBeenCalled()
 
-    expect(() => detener()).not.toThrow()
-    expect(realtime.off).toHaveBeenCalledTimes(7)
+    await expect(detener()).resolves.toBeUndefined()
+    expect(realtime.off).toHaveBeenCalledTimes(8)
     expect(realtime.unsubscribe).toHaveBeenCalledTimes(1)
     expect(realtime.disconnect).not.toHaveBeenCalled()
     expect(alReportar).not.toHaveBeenCalled()
@@ -510,6 +510,30 @@ describe('filaDesdeMensaje — envelope parsing via one narrow adapter', () => {
     expect(() => filaDesdeMensaje(mensajeIlegible)).toThrow()
   })
 
+  it('reports and drops an envelope with a null meta delivered through the registered handler', async () => {
+    const queryClient = new QueryClient()
+    const colecciones = await construirColecciones(queryClient, 'hogar-1')
+    const alReportar = vi.fn()
+    await iniciarSuscripcionHogar('hogar-1', colecciones, alReportar)
+    const mensajeSinMeta = {
+      meta: null,
+      ...filaListaCruda({ id: 'lista-sin-meta' }),
+    } as unknown as SocketMessage
+
+    // Through `emitirEvento`, not `filaDesdeMensaje` directly: the channel
+    // filter wraps the translator, so it must not throw before the
+    // translator gets to report and drop the envelope.
+    expect(() => emitirEvento('list.insert', mensajeSinMeta)).not.toThrow()
+
+    expect(colecciones.listas.get('lista-sin-meta')).toBeUndefined()
+    expect(alReportar).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tipo: 'mensaje-ilegible',
+        evento: 'list.insert',
+      }),
+    )
+  })
+
   it('drops a message whose senderType is not system', async () => {
     const queryClient = new QueryClient()
     const colecciones = await construirColecciones(queryClient, 'hogar-1')
@@ -531,6 +555,128 @@ describe('filaDesdeMensaje — envelope parsing via one narrow adapter', () => {
       }),
     )
   })
+})
+
+describe('iniciarSuscripcionHogar — setup failure safety', () => {
+  it('registers every handler before starting the socket connection', async () => {
+    const queryClient = new QueryClient()
+    const colecciones = await construirColecciones(queryClient, 'hogar-1')
+
+    await iniciarSuscripcionHogar('hogar-1', colecciones)
+
+    const eventosRegistrados = realtime.on.mock.calls.map(([evento]) => evento)
+    expect([...eventosRegistrados].sort()).toEqual([
+      'connect_error',
+      'error',
+      'item.delete',
+      'item.insert',
+      'item.update',
+      'list.delete',
+      'list.insert',
+      'list.update',
+    ])
+    // Every registration, not only the first: a single late `on` would
+    // still let that one event race the subscription setup.
+    expect(Math.max(...realtime.on.mock.invocationCallOrder)).toBeLessThan(
+      realtime.connect.mock.invocationCallOrder[0],
+    )
+  })
+
+  it('reports and rejects an unsuccessful subscription instead of exposing readiness', async () => {
+    const queryClient = new QueryClient()
+    const colecciones = await construirColecciones(queryClient, 'hogar-1')
+    const alReportar = vi.fn()
+    realtime.subscribe.mockResolvedValueOnce({
+      ok: false,
+      error: { message: 'not authorized' },
+    })
+
+    await expect(
+      iniciarSuscripcionHogar('hogar-1', colecciones, alReportar),
+    ).rejects.toThrow('not authorized')
+    expect(alReportar).toHaveBeenCalledWith(
+      expect.objectContaining({ tipo: 'socket' }),
+    )
+    expect(realtime.off).toHaveBeenCalledTimes(8)
+    expect(realtime.unsubscribe).not.toHaveBeenCalled()
+  })
+})
+
+it('drops a realtime message from another household channel', async () => {
+  const queryClient = new QueryClient()
+  const colecciones = await construirColecciones(queryClient, 'hogar-1')
+  await iniciarSuscripcionHogar('hogar-1', colecciones)
+  emitirEvento(
+    'list.insert',
+    unMensaje(filaListaCruda({ id: 'lista-ajena' }), {
+      channel: 'household:hogar-2',
+    }),
+  )
+  expect(colecciones.listas.get('lista-ajena')).toBeUndefined()
+})
+
+it('rejects an aborted setup before it subscribes and removes its handlers', async () => {
+  const queryClient = new QueryClient()
+  const colecciones = await construirColecciones(queryClient, 'hogar-1')
+  const controlador = new AbortController()
+  controlador.abort()
+
+  await expect(
+    iniciarSuscripcionHogar(
+      'hogar-1',
+      colecciones,
+      vi.fn(),
+      controlador.signal,
+    ),
+  ).rejects.toMatchObject({ name: 'AbortError' })
+  expect(realtime.subscribe).not.toHaveBeenCalled()
+  expect(realtime.off).toHaveBeenCalledTimes(8)
+})
+
+it('makes the registered handlers inert once the setup signal is aborted', async () => {
+  const queryClient = new QueryClient()
+  const colecciones = await construirColecciones(queryClient, 'hogar-1')
+  colecciones.listas.utils.writeUpsert(
+    filaListaCrudaComoLista(filaListaCruda()),
+  )
+  const controlador = new AbortController()
+  const alReportar = vi.fn()
+  await iniciarSuscripcionHogar(
+    'hogar-1',
+    colecciones,
+    alReportar,
+    controlador.signal,
+  )
+
+  // The owner aborts the scope; `detener()` has not run yet, so the handlers
+  // are still registered on the shared socket.
+  controlador.abort()
+  emitirEvento('list.insert', unMensaje(filaListaCruda({ id: 'lista-tardia' })))
+  emitirEvento('list.delete', unMensaje(filaListaCruda()))
+
+  expect(colecciones.listas.get('lista-tardia')).toBeUndefined()
+  expect(colecciones.listas.get('lista-1')).toBeDefined()
+  expect(alReportar).not.toHaveBeenCalled()
+})
+
+it('serializes old-generation teardown before a same-channel replacement', async () => {
+  const queryClient = new QueryClient()
+  const colecciones = await construirColecciones(queryClient, 'hogar-1')
+  const anterior = await iniciarSuscripcionHogar('hogar-1', colecciones)
+  let completarSalida!: () => void
+  realtime.unsubscribe.mockImplementationOnce(
+    () =>
+      new Promise<void>((resolve) => {
+        completarSalida = resolve
+      }),
+  )
+  const salida = anterior.detener()
+  const reemplazo = iniciarSuscripcionHogar('hogar-1', colecciones)
+  await Promise.resolve()
+  expect(realtime.subscribe).toHaveBeenCalledTimes(1)
+  completarSalida()
+  await Promise.all([salida, reemplazo])
+  expect(realtime.subscribe).toHaveBeenCalledTimes(2)
 })
 
 // Both helpers below convert a raw fixture row into the shape the domain
