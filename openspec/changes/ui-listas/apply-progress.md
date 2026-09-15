@@ -58,3 +58,37 @@ None of these deviate from the spec's observable requirements — all are implem
 ## Issues Found
 
 None blocking. The shadcn CLI's generated `input.tsx`/`label.tsx`/`alert-dialog.tsx` needed a `prettier --write` pass to match the project's existing style (matching the precedent already set by the pre-existing `button.tsx`/`alert.tsx`/`avatar.tsx`, which pass `prettier --check` today) — folded into the `chore(frontend): add shadcn input, label and alert-dialog` commit, no logic changed.
+
+## Remediation after verify (`pass_with_warnings`, Engram #554)
+
+`openspec/changes/ui-listas/verify-report.md` raised three WARNINGs (0 blockers, 0 critical findings). All three are fixed, each on the slice branch that owns the file, then the downstream slices were rebased so the chain stays linear.
+
+### W1 — Out-of-boundary `cn` dependency + lockfile drift
+
+- **Fix**: repointed `frontend/src/shared/ui/{input,label,alert-dialog}.tsx` from `import { cn } from 'cn'` to `import { cn } from '@/shared/lib/utils'` (same signature, matches `button.tsx`/`alert.tsx`/`avatar.tsx` and `components.json`'s `utils` alias). Removed `"cn": "^0.3.0"` from `frontend/package.json`. Since that left `package.json` byte-identical to `develop`, `frontend/pnpm-lock.yaml` was restored from `develop` outright (`git checkout develop -- frontend/pnpm-lock.yaml`) rather than regenerated — `@tanstack/react-router`/`-devtools`/`router-plugin` are pinned to `"latest"` in `package.json`, so a fresh `pnpm install` risked re-drifting those versions again. Verified with `pnpm install --frozen-lockfile` (accepted the restored lockfile, removed only the 8 `cn`-related packages from `node_modules`) and `rg -n "from 'cn'" frontend/src` (no hits).
+- **Verification**: `git diff develop -- frontend/package.json frontend/pnpm-lock.yaml` is empty on the final `feat/ui-listas-1-primitivas` tip.
+- **Commit**: `fix(frontend): import cn from the shared utils alias` on `feat/ui-listas-1-primitivas`.
+
+### W2 — Raw domain tokens / SDK messages in inline error copy
+
+- **Fix**: added `frontend/src/modules/listas/ui/listas/copia-error.ts` exporting `copiaErrorLista(error: ErrorAplicacion): string`, mapping `tipo === 'validation'` messages `nombre-vacio`/`nombre-demasiado-largo` (the exact tokens `crearLista()` in `domain/lista.ts` produces via `fallo('validation', ...)`) to Spanish copy, any `persistence`/`query`/`realtime` to one generic retry message, and any other validation message to a generic fallback. Reused in `crear-lista.tsx`, `fila-lista.tsx`, and `contenido-eliminar-lista.tsx` in place of `resultado.error.message`.
+- **`pantalla-listas.tsx`'s `copiaBanner()`**: checked per the remediation instruction — it already maps `error.tipo` to its own Spanish copy and never prints a raw message, so it was left unchanged. Note: its wording ("Intenta de nuevo.") differs slightly from `copia-error.ts`'s inline copy ("Inténtalo de nuevo."); both are correct Spanish and neither leaks raw text, so this cosmetic inconsistency was left as-is (out of the remediation's explicit scope).
+- **Known limitation (not exercised by any test)**: `ContenidoEliminarLista` also routes through `copiaErrorLista`. `useListas().eliminar`'s own local unavailability message (`'La lista no está disponible'`, already Spanish, tipo `validation`) is not one of the two known tokens, so it would fall through to the generic `'El nombre no es válido.'` fallback — a wording mismatch (the message is about the list, not a name) for an edge case that requires the household/list to change mid-session. Following the remediation instruction's literal mapping; flagging here for a future follow-up rather than silently special-casing it.
+- **Tests (RED first, per file)**: each of `crear-lista.test.tsx`, `fila-lista.test.tsx`, `contenido-eliminar-lista.test.tsx`, and `eliminar-lista.test.tsx` (composes `ContenidoEliminarLista` for real) had its existing raw-message `ok:false` case rewritten to assert the mapped Spanish copy and the ABSENCE of the raw token/message, plus a new dedicated `persistence`-tipo case per component confirming the generic retry copy. `pantalla-listas.test.tsx`'s own rename-failure TRIANGULATE test needed the same update as a consequence of `FilaLista`'s fix, inherited through the slice 2→3 rebase.
+- **Commits**: `fix(frontend): show Spanish copy for domain and persistence errors` on `feat/ui-listas-1-primitivas` (CrearLista) and on `feat/ui-listas-2-filas` (FilaLista + ContenidoEliminarLista); `fix(frontend): update pantalla-listas rename-failure test for mapped copy` on `feat/ui-listas-3-pantalla` (consequential test-only fix).
+
+### W3 — Missing `min-w-11` touch baseline
+
+- **Fix**: added `min-w-11` next to `min-h-11` on every new interactive control: `EnlaceLista`'s row link, `CrearLista`'s submit, `FilaLista`'s Renombrar/Guardar/Cancelar, `EliminarLista`'s trigger, and `ContenidoEliminarLista`'s confirm/cancel. `PantallaListas` itself owns no new controls (only composes the above), so no change was needed there.
+- **Tests**: extended each component's existing `min-h-11` structural assertion to also assert `/\bmin-w-11\b/`, RED first (confirmed the new assertion failed against the pre-fix class list), then GREEN.
+- **Commits**: `style(frontend): add min-w-11 touch baseline to list controls` on `feat/ui-listas-1-primitivas` (EnlaceLista) and on `feat/ui-listas-2-filas` (EliminarLista); folded into the W2 commits above for `CrearLista`, `FilaLista`, and `ContenidoEliminarLista` since those files already had W2 edits in the same pass.
+
+### Post-remediation verification (each slice tip, after rebasing)
+
+| Slice | `pnpm test` | `pnpm exec tsc --noEmit` | `pnpm run lint` | `pnpm run check` |
+|---|---|---|---|---|
+| `feat/ui-listas-1-primitivas` | 231/231 | clean | clean | clean |
+| `feat/ui-listas-2-filas` | 253/253 | clean | clean | clean |
+| `feat/ui-listas-3-pantalla` | 269/269 | clean | clean | clean |
+
+Chain stays linear: `develop` → `feat/ui-listas-1-primitivas` → `feat/ui-listas-2-filas` → `feat/ui-listas-3-pantalla`, rebased with `git rebase --autostash` (slice 2) and `git rebase --autostash --onto` (slice 3, to avoid replaying slice 2's pre-remediation commits) so the user's pre-existing uncommitted edits to `.atl/skill-registry.md`/`docs/tareas/*.md` were preserved untouched throughout (never staged, never committed).
