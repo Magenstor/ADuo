@@ -37,10 +37,11 @@ describe('EnlaceLista', () => {
     expect(enlace).toHaveAttribute('href', '/listas/lista-2')
   })
 
-  it('carries the min-h-11 touch-target class', async () => {
+  it('carries the min-h-11 and min-w-11 touch-target classes', async () => {
     const { findByRole } = renderizar({ id: 'lista-3', nombre: 'Oficina' })
 
     const enlace = await findByRole('link', { name: 'Oficina' })
     expect(enlace.className).toMatch(/\bmin-h-11\b/)
+    expect(enlace.className).toMatch(/\bmin-w-11\b/)
   })
 })

@@ -26,7 +26,7 @@ export function EnlaceLista({
     // @ts-expect-error — `/listas/$listaId` is registered by task 050 (Group B)
     <Link
       {...destino}
-      className={cn(buttonVariants({ variant: 'link' }), 'min-h-11')}
+      className={cn(buttonVariants({ variant: 'link' }), 'min-h-11 min-w-11')}
     >
       {lista.nombre}
     </Link>
