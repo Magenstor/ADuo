@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Interfaz |
 | **Depende de** | [050](050-ui-detalle.md) |
 | **Bloquea a** | — |
@@ -13,8 +13,8 @@ Que se pueda usar con una mano, de pie, en un supermercado.
 
 ## Pasos
 
-- [ ] Objetivos táctiles grandes en añadir y marcar.
-- [ ] Acciones principales al alcance del pulgar.
+- [x] Objetivos táctiles grandes en añadir y marcar.
+- [x] Acciones principales al alcance del pulgar.
 
 ## Hecho cuando
 

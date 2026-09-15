@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Esqueleto de interfaz |
 | **Depende de** | [034](034-router.md), [038](038-sesion-y-rutas.md) |
 | **Bloquea a** | 049 |
@@ -13,11 +13,11 @@ El marco donde viven las pantallas. Ninguna pantalla concreta todavía.
 
 ## Pasos
 
-- [ ] Layout raíz: contenedor de la aplicación, cabecera y área de contenido.
-- [ ] En la cabecera, la identidad del usuario y el cierre de sesión.
-- [ ] Navegación entre las pantallas del módulo 1, con la URL como única fuente de verdad.
-- [ ] Estados compartidos de carga y de vacío, reutilizables por las pantallas.
-- [ ] Instalar los componentes de shadcn que haga falta.
+- [x] Layout raíz: contenedor de la aplicación, cabecera y área de contenido.
+- [x] En la cabecera, la identidad del usuario y el cierre de sesión.
+- [x] Navegación entre las pantallas del módulo 1, con la URL como única fuente de verdad.
+- [x] Estados compartidos de carga y de vacío, reutilizables por las pantallas.
+- [x] Instalar los componentes de shadcn que haga falta.
 
 ## Hecho cuando
 

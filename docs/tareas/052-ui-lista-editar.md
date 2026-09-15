@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Interfaz |
 | **Depende de** | [049](049-ui-listas.md) |
 | **Bloquea a** | — |
@@ -13,8 +13,8 @@ Gestionar las listas.
 
 ## Pasos
 
-- [ ] Renombrar cualquier lista del hogar.
-- [ ] Borrar lista con confirmación que dice **cuántos artículos se pierden**.
+- [x] Renombrar cualquier lista del hogar.
+- [x] Borrar lista con confirmación que dice **cuántos artículos se pierden**.
 
 ## Hecho cuando
 

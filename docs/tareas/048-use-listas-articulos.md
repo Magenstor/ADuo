@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Aplicación |
 | **Depende de** | [040](040-dominio-lista.md), [041](041-dominio-articulo.md), [044](044-colecciones.md), [045](045-realtime-direct-writes.md), [047](047-use-hogar.md) |
 | **Bloquea a** | 049, 050 |
@@ -13,9 +13,9 @@ Los hooks que consume la interfaz.
 
 ## Pasos
 
-- [ ] `useListas` con crear, renombrar y borrar.
-- [ ] `useArticulos` con añadir, editar, marcar, desmarcar, eliminar y vaciar comprados.
-- [ ] Mutaciones optimistas con reversión.
+- [x] `useListas` con crear, renombrar y borrar.
+- [x] `useArticulos` con añadir, editar, marcar, desmarcar, eliminar y vaciar comprados.
+- [x] Mutaciones optimistas con reversión.
 
 ## Hecho cuando
 

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Aplicación |
 | **Depende de** | [032](032-esqueleto-carpetas.md), [038](038-sesion-y-rutas.md) |
 | **Bloquea a** | 048 |
@@ -13,7 +13,7 @@ El hogar del usuario y sus miembros.
 
 ## Pasos
 
-- [ ] Hook en `shared/hogar/` que expone el hogar y la lista de miembros.
+- [x] Hook en `shared/hogar/` que expone el hogar y la lista de miembros.
 
 ## Hecho cuando
 

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Interfaz |
 | **Depende de** | [050](050-ui-detalle.md) |
 | **Bloquea a** | — |
@@ -13,7 +13,7 @@ Limpiar la lista después de la compra.
 
 ## Pasos
 
-- [ ] Borrar de golpe todos los artículos marcados de una lista.
+- [x] Borrar de golpe todos los artículos marcados de una lista.
 
 ## Hecho cuando
 

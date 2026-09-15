@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Interfaz |
 | **Depende de** | [042](042-dominio-busqueda.md), [050](050-ui-detalle.md) |
 | **Bloquea a** | — |
@@ -13,8 +13,8 @@ Encontrar rápido en una lista larga.
 
 ## Pasos
 
-- [ ] Campo de búsqueda que filtra por texto usando la normalización del dominio.
-- [ ] Mantener el agrupado: pendientes antes que comprados.
+- [x] Campo de búsqueda que filtra por texto usando la normalización del dominio.
+- [x] Mantener el agrupado: pendientes antes que comprados.
 
 ## Hecho cuando
 

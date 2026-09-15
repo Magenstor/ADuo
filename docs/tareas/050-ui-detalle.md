@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Interfaz |
 | **Depende de** | [048](048-use-listas-articulos.md), [049](049-ui-listas.md) |
 | **Bloquea a** | 051, 053, 054 |
@@ -13,9 +13,9 @@ La pantalla que de verdad se usa en el supermercado.
 
 ## Pasos
 
-- [ ] Listado de artículos con pendientes primero y comprados agrupados al final.
-- [ ] Añadir artículo.
-- [ ] Marcar y desmarcar.
+- [x] Listado de artículos con pendientes primero y comprados agrupados al final.
+- [x] Añadir artículo.
+- [x] Marcar y desmarcar.
 
 ## Hecho cuando
 

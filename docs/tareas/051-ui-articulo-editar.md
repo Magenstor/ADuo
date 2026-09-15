@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Interfaz |
 | **Depende de** | [050](050-ui-detalle.md) |
 | **Bloquea a** | — |
@@ -13,8 +13,8 @@ Corregir y quitar.
 
 ## Pasos
 
-- [ ] Editar el texto de un artículo.
-- [ ] Eliminar un artículo.
+- [x] Editar el texto de un artículo.
+- [x] Eliminar un artículo.
 
 ## Hecho cuando
 

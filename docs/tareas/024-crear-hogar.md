@@ -13,7 +13,7 @@ Que la aplicación no arranque vacía.
 
 ## Pasos
 
-- [ ] Insertar el hogar.
+- [x] Insertar el hogar. (Hecho el 15 de septiembre de 2026 con SQL de administrador: hogar "Casa".)
 - [ ] Insertar la lista inicial llamada "La compra".
 
 ## Hecho cuando

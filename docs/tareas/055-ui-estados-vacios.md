@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Estado** | pendiente |
+| **Estado** | hecha |
 | **Bloque** | Frontend · Interfaz |
 | **Depende de** | [049](049-ui-listas.md) |
 | **Bloquea a** | — |
@@ -13,8 +13,8 @@ Que la aplicación nunca parezca rota.
 
 ## Pasos
 
-- [ ] Estado vacío cuando no hay ninguna lista, que invita a crear una.
-- [ ] Estado de la interfaz cuando el segundo miembro todavía no está dado de alta.
+- [x] Estado vacío cuando no hay ninguna lista, que invita a crear una.
+- [x] Estado de la interfaz cuando el segundo miembro todavía no está dado de alta.
 
 ## Hecho cuando
 
